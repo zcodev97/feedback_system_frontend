@@ -5,7 +5,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ContainerDetailsPage from "./pages/vendors/details";
 import AddContainerPage from "./pages/vendors/add";
-import PaymentsPage from "./pages/withdraws/records";
+import PaymentsPage from "./pages/payments/records";
+import PaymentDetialsPage from "./pages/payments/details";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/vendors" element={<VendorsPage />} />
             <Route path="/payments" element={<PaymentsPage />} />
+            <Route path="/payment_details" element={<PaymentDetialsPage />} />
             <Route
               path="/container_details"
               element={<ContainerDetailsPage />}

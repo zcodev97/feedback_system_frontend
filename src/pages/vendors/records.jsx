@@ -198,7 +198,7 @@ function VendorsPage() {
           <div className="container text-center ">
             <h1> Vendors</h1>
           </div>
-          <div className="container mt-2 mb-2 text-center d-flex">
+          {/* <div className="container mt-2 mb-2 text-center d-flex">
             <form onSubmit={handleSubmit}>
               <input
                 type="file"
@@ -213,7 +213,7 @@ function VendorsPage() {
             >
               Upload
             </button>
-          </div>
+          </div> */}
           <div
             className="container text-center"
             style={{

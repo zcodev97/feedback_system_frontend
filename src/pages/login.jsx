@@ -84,10 +84,7 @@ function Login() {
               return;
             }
 
-            navigate("/containers", { replace: true });
-
-            localStorage.setItem("company_id", data[0].id);
-            localStorage.setItem("company_name", data[0].title);
+            navigate("/vendors", { replace: true });
           })
           .catch((error) => {
             console.log(error);

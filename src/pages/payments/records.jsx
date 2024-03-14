@@ -21,7 +21,7 @@ function PaymentsPage() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [withdraws, setWithdraws] = useState([]);
+  const [data, setData] = useState([]);
 
   const pagination = paginationFactory({
     page: 1,
@@ -36,17 +36,9 @@ function PaymentsPage() {
 
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
-      navigate("/withdraw_details", {
+      navigate("/payment_details", {
         state: {
-          invoice_id: row.invoice_id,
-          container: row.container,
-          company_name: row.company_name,
-          price_in_dinar: row.price_in_dinar,
-          price_in_dollar: row.price_in_dollar,
-          description: row.description,
-          withdraw_type: row.withdraw_type,
-          created_at: row.created_at,
-          out_to: row.out_to,
+          row: row,
         },
       });
     },
@@ -67,6 +59,9 @@ function PaymentsPage() {
     })
       .then((response) => response.json())
       .then((response) => {
+        if (response.code === "token_not_valid") {
+          navigate("/login", { replace: true });
+        }
         response.forEach((i) => {
           dropdownMenupaymentmethodTemp.push({
             label: i.title,
@@ -145,32 +140,42 @@ function PaymentsPage() {
       });
   }
 
-  async function loadAdminWithdraws() {
+  async function loadPaymentForGivenDate() {
     setLoading(true);
-    await fetch(SYSTEM_URL + "payments/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    await fetch(
+      SYSTEM_URL +
+        `vendor-payments-summary/?start_date=${formatDate(
+          startDate
+        )}&end_date=${formatDate(endDate)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
-        data.map((i) => {
-          i.amount = i.amount.toLocaleString("en-US", {
+        if (data.code === "token_not_valid") {
+          navigate("/login", { replace: true });
+        }
+        data[0]?.map((i) => {
+          i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
             style: "currency",
             currency: "IQD",
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           });
 
-          i.created_at = formatDate(new Date(i.created_at));
-          i.date_from = formatDate(new Date(i.date_from));
-          i.date_to = formatDate(new Date(i.date_to));
-          i.payment_cycle = i.payment_cycle.title;
-          i.payment_method = i.payment_method.title;
+          // i.created_at = formatDate(new Date(i.created_at));
+          // i.date_from = formatDate(new Date(i.date_from));
+          // i.date_to = formatDate(new Date(i.date_to));
+          // i.payment_cycle = i.payment_cycle.title;
+          // i.payment_method = i.payment_method.title;
         });
-        setWithdraws(data);
+        console.log(data);
+        setData(data.vendor_summary);
       })
       .catch((error) => {
         alert(error);
@@ -180,26 +185,32 @@ function PaymentsPage() {
       });
   }
 
-  const withdrawsColumns = [
+  const vendorPaymentsColumns = [
     {
-      dataField: "created_by",
-      text: "created_by",
+      dataField: "order_count",
+      text: "order_count",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "created_at",
-      text: "created_at",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "amount",
-      text: "amount",
+      dataField: "to_be_paid",
+      text: "to_be_paid",
       sort: true,
       filter: textFilter(),
     },
 
+    {
+      dataField: "penalized",
+      text: "penalized",
+      sort: true,
+      filter: textFilter(),
+    },
+    {
+      dataField: "fully_refunded",
+      text: "fully_refunded",
+      sort: true,
+      filter: textFilter(),
+    },
     {
       dataField: "number",
       text: "number",
@@ -207,38 +218,33 @@ function PaymentsPage() {
       filter: textFilter(),
     },
     {
-      dataField: "payment_method",
-      text: "payment_method",
+      dataField: "pay_period",
+      text: "pay_period",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "payment_cycle",
-      text: "payment_cycle",
+      dataField: "pay_type",
+      text: "pay_type",
+      sort: true,
+      filter: textFilter(),
+    },
+
+    {
+      dataField: "end_date",
+      text: "end_date ",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "date_to",
-      text: "date_to",
+      dataField: "start_date",
+      text: "start_date",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "date_from",
-      text: "date_from",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "vendor_name",
-      text: "vendor_name ",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "vendor_id",
-      text: "vendor_id",
+      dataField: "vendor",
+      text: "vendor",
       sort: true,
       filter: textFilter(),
     },
@@ -247,7 +253,7 @@ function PaymentsPage() {
     loadPaymentsMethod();
     loadPaymentsCycle();
     loadVendors();
-    loadAdminWithdraws();
+    // loadPaymentForGivenDate();
   }, []);
   return (
     <>
@@ -317,15 +323,27 @@ function PaymentsPage() {
             </div>
           </div>
 
-          <div className="container-fluid" style={{ overflowX: "auto" }}>
+          <div className="container text-center">
+            <button
+              className="btn btn-warning"
+              onClick={loadPaymentForGivenDate}
+            >
+              Get Orders
+            </button>
+          </div>
+
+          <div
+            className="container-fluid text-center"
+            style={{ overflowX: "auto" }}
+          >
             <BootstrapTable
               className="text-center"
               hover={true}
               bordered={false}
               bootstrap4
               keyField="id"
-              columns={withdrawsColumns}
-              data={withdraws}
+              columns={vendorPaymentsColumns}
+              data={data}
               pagination={pagination}
               rowEvents={rowEvents}
               filter={filterFactory()}
