@@ -7,6 +7,8 @@ import ContainerDetailsPage from "./pages/vendors/details";
 import AddContainerPage from "./pages/vendors/add";
 import PaymentsPage from "./pages/payments/records";
 import PaymentDetialsPage from "./pages/payments/details";
+import PaidVendorsPage from "./pages/paid vendors/records";
+import PaidVendorOrdersPage from "./pages/paid vendors/details";
 
 function App() {
   return (
@@ -28,6 +30,11 @@ function App() {
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/vendors" element={<VendorsPage />} />
+            <Route path="/paid_vendors" element={<PaidVendorsPage />} />
+            <Route
+              path="/paid_vendor_orders_details"
+              element={<PaidVendorOrdersPage />}
+            />
             <Route path="/payments" element={<PaymentsPage />} />
             <Route path="/payment_details" element={<PaymentDetialsPage />} />
             <Route

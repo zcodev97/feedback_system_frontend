@@ -144,8 +144,17 @@ function PaymentsPage() {
   }
 
   async function payAllVendors() {
-    data?.vendor_summary?.map((i) => {
-      fetch(SYSTEM_URL + "create_payment/", {
+    setLoading(true);
+    data?.map(async (i) => {
+      let paymentCycleID = paymentCycleDropDown.filter(
+        (j) => j.label === i.pay_period
+      )[0]?.value;
+
+      let paymentMethodID = paymentMethodDropDown.filter(
+        (j) => j.label === i.pay_type
+      )[0]?.value;
+
+      await fetch(SYSTEM_URL + "create_payment/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,23 +163,22 @@ function PaymentsPage() {
 
         body: JSON.stringify({
           vendor_id: i.vendor_id,
-          vendor_name: i.vendor_name,
-          date_from: i.date_from,
-          date_to: i.date_to,
+          vendor: i.vendor,
+          date_from: formatDate(i.start_date),
+          date_to: formatDate(i.end_date),
           number: i.number,
-          amount: i.amount,
+          amount: i.to_be_paid,
           is_paid: true,
           orders: i.orders,
-          payment_cycle: i.payment_cycle,
-          payment_method: i.payment_method,
+          orders_count: i.order_count,
+          payment_cycle: paymentCycleID,
+          payment_method: paymentMethodID,
+
           created_by: localStorage.getItem("user_id"),
         }),
       })
         .then((response) => {
-          if (response.status === 200) {
-            return response.json();
-          }
-          return {};
+          return response.json();
         })
         .then((data) => {
           console.log(data);
@@ -178,12 +186,9 @@ function PaymentsPage() {
         .catch((error) => {
           console.log(error);
           alert(error + "😕");
-        })
-        .finally(() => {
-          setLoading(false);
         });
     });
-    console.log("completed");
+    setLoading(false);
   }
 
   async function loadPaymentForGivenDate() {
@@ -206,8 +211,8 @@ function PaymentsPage() {
         if (data.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
-        console.log(data);
-        data?.vendor_summary.map((i) => {
+        // console.log(data);
+        data.map((i) => {
           i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
             style: "currency",
             currency: "IQD",
@@ -222,7 +227,7 @@ function PaymentsPage() {
           // i.payment_method = i.payment_method.title;
         });
 
-        setData(data?.vendor_summary);
+        setData(data);
       })
       .catch((error) => {
         alert(error);
@@ -237,63 +242,63 @@ function PaymentsPage() {
       dataField: "is_paid",
       text: "is_paid",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "order_count",
       text: "order_count",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "to_be_paid",
       text: "to_be_paid",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
 
     {
       dataField: "penalized",
       text: "penalized",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "fully_refunded",
       text: "fully_refunded",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "number",
       text: "number",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "pay_period",
       text: "pay_period",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "pay_type",
       text: "pay_type",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
 
     {
       dataField: "end_date",
       text: "end_date ",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "start_date",
       text: "start_date",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "vendor",
@@ -305,13 +310,13 @@ function PaymentsPage() {
       dataField: "vendor_id",
       text: "vendor_id",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
   ];
   useEffect(() => {
-    // loadPaymentsMethod();
-    // loadPaymentsCycle();
-    // loadVendors();
+    loadPaymentsMethod();
+    loadPaymentsCycle();
+    loadVendors();
 
     if (location?.state?.data.length > 0) {
       setData(location?.state?.data);
@@ -332,7 +337,7 @@ function PaymentsPage() {
           <div className="container text-center">
             <h1 className="text-danger "> Payments</h1>
           </div>
-          {/* <div className="container d-flex mt-2 mb-2">
+          <div className="container d-flex mt-2 mb-2">
             <div className="container ">
               Vendor
               <Select
@@ -360,7 +365,7 @@ function PaymentsPage() {
                 placeholder={"Payment Cycle"}
               />
             </div>
-          </div> */}
+          </div>
 
           <div
             className="container d-flex mt-2 mb-2"

@@ -9,7 +9,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import "react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css";
 
-function PaymentDetialsPage() {
+function PaidVendorOrdersPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -102,12 +102,12 @@ function PaymentDetialsPage() {
       sort: true,
       filter: textFilter(),
     },
-    {
-      dataField: "vendor",
-      text: "vendor",
-      sort: true,
-      filter: textFilter(),
-    },
+    // {
+    //   dataField: "vendor",
+    //   text: "vendor",
+    //   sort: true,
+    //   filter: textFilter(),
+    // },
 
     {
       dataField: "vendor_discount",
@@ -121,13 +121,15 @@ function PaymentDetialsPage() {
       sort: true,
       filter: textFilter(),
     },
-    {
-      dataField: "vendor_id",
-      text: "vendor_id",
-      sort: true,
-      filter: textFilter(),
-    },
+    // {
+    //   dataField: "vendor_id",
+    //   text: "vendor_id",
+    //   sort: true,
+    //   filter: textFilter(),
+    // },
   ];
+
+  console.log(location.state.row.orders);
 
   location.state.row.orders?.map((i) => {
     i.to_be_paid = i.to_be_paid?.toLocaleString("en-US", {
@@ -149,7 +151,7 @@ function PaymentDetialsPage() {
       maximumFractionDigits: 2,
     });
 
-    // i.created_at = formatDate(new Date(i.created_at));
+    i.order_date = formatDate(new Date(i.order_date));
     // i.date_from = formatDate(new Date(i.date_from));
     // i.date_to = formatDate(new Date(i.date_to));
     // i.payment_cycle = i.payment_cycle.title;
@@ -160,27 +162,21 @@ function PaymentDetialsPage() {
     <>
       <NavBar />
 
-      <button
-        className="btn btn-danger"
-        onClick={() => {
-          navigate("/payments", {
-            replace: true,
-            state: {
-              data: previousData,
-              start_date: start_date,
-              end_date: end_date,
-            },
-          });
-        }}
-      >
-        back
-      </button>
-
       <div className="container-fluid" style={{ overflowX: "auto" }}>
         <div
           className="container-fluid text-center"
           style={{ overflowX: "auto" }}
         >
+          <div className="container text-center" style={{ fontSize: "20px" }}>
+            <b> Paid Orders For Vendor {location.state.row.vendor} </b>
+            <hr />
+            <b>
+              Period {location.state.row.date_from} to{" "}
+              {location.state.row.date_to}
+            </b>
+          </div>
+          <hr />
+
           <BootstrapTable
             className="text-center"
             hover={true}
@@ -198,4 +194,4 @@ function PaymentDetialsPage() {
     </>
   );
 }
-export default PaymentDetialsPage;
+export default PaidVendorOrdersPage;

@@ -149,7 +149,7 @@ function PaymentDetialsPage() {
       maximumFractionDigits: 2,
     });
 
-    // i.created_at = formatDate(new Date(i.created_at));
+    i.order_date = formatDate(new Date(i.order_date));
     // i.date_from = formatDate(new Date(i.date_from));
     // i.date_to = formatDate(new Date(i.date_to));
     // i.payment_cycle = i.payment_cycle.title;

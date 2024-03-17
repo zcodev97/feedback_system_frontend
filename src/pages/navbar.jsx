@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import Loading from "./loading";
 // db password Qymbg5QhNbAzRn!
-
+import "@flaticon/flaticon-uicons/css/all/all.css";
 function NavBar() {
   const navigate = useNavigate();
 
@@ -38,6 +38,7 @@ function NavBar() {
           className="container-fluid"
           style={{
             display: "flex",
+            flexDirection: "row-reverse",
             alignItems: "center",
             justifyContent: "end",
             margin: "0px",
@@ -61,6 +62,15 @@ function NavBar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item rounded m-1">
+                <Link
+                  className={navLinkClassName}
+                  to="/vendors"
+                  style={{ fontSize: "20px", color: "red" }}
+                >
+                  <i class="fi fi-rs-bells"></i>
+                </Link>
+              </li>
+              <li className="nav-item rounded m-1">
                 <Link className={navLinkClassName} to="/vendors">
                   <h5>Vendors</h5>
                 </Link>
@@ -71,8 +81,8 @@ function NavBar() {
                 </Link>
               </li>
               <li className="nav-item rounded m-1">
-                <Link className={navLinkClassName} to="/paid_orders">
-                  <h5>Paid Orders</h5>
+                <Link className={navLinkClassName} to="/paid_vendors">
+                  <h5>Paid Vendors</h5>
                 </Link>
               </li>
 

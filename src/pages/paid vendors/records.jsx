@@ -14,7 +14,7 @@ import DateTimePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
-function PaymentsPage() {
+function PaidVendorsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -36,12 +36,9 @@ function PaymentsPage() {
 
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
-      navigate("/payment_details", {
+      navigate("/paid_vendor_orders_details", {
         state: {
           row: row,
-          data: data,
-          startDate: startDate,
-          endDate: endDate,
         },
       });
     },
@@ -49,7 +46,7 @@ function PaymentsPage() {
 
   async function loadAllPayments() {
     setLoading(true);
-    await fetch(SYSTEM_URL + `vendor-payments-summary/`, {
+    await fetch(SYSTEM_URL + `payments/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -61,23 +58,28 @@ function PaymentsPage() {
         if (data.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
+
         console.log(data);
-        data?.vendor_summary.map((i) => {
-          i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
+
+        data?.map((i) => {
+          i.amount = i.amount.toLocaleString("en-US", {
             style: "currency",
             currency: "IQD",
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
           });
 
+          i.date_from = formatDate(i.date_from);
+          i.date_to = formatDate(i.date_to);
+
           i.is_paid = i.is_paid ? true : false;
           // i.date_from = formatDate(new Date(i.date_from));
           // i.date_to = formatDate(new Date(i.date_to));
-          // i.payment_cycle = i.payment_cycle.title;
-          // i.payment_method = i.payment_method.title;
+          i.payment_cycle = i.payment_cycle.title;
+          i.payment_method = i.payment_method.title;
         });
 
-        setData(data?.vendor_summary);
+        setData(data);
       })
       .catch((error) => {
         alert(error);
@@ -95,27 +97,14 @@ function PaymentsPage() {
       filter: textFilter(),
     },
     {
-      dataField: "order_count",
-      text: "order_count",
+      dataField: "orders_count",
+      text: "orders_count",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "to_be_paid",
-      text: "to_be_paid",
-      sort: true,
-      filter: textFilter(),
-    },
-
-    {
-      dataField: "penalized",
-      text: "penalized",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "fully_refunded",
-      text: "fully_refunded",
+      dataField: "amount",
+      text: "amount",
       sort: true,
       filter: textFilter(),
     },
@@ -126,27 +115,27 @@ function PaymentsPage() {
       filter: textFilter(),
     },
     {
-      dataField: "pay_period",
-      text: "pay_period",
+      dataField: "payment_method",
+      text: "payment_method",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "pay_type",
-      text: "pay_type",
+      dataField: "payment_cycle",
+      text: "payment_cycle",
       sort: true,
       filter: textFilter(),
     },
 
     {
-      dataField: "end_date",
-      text: "end_date ",
+      dataField: "date_to",
+      text: "date_to ",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "start_date",
-      text: "start_date",
+      dataField: "date_from",
+      text: "date_from",
       sort: true,
       filter: textFilter(),
     },
@@ -175,7 +164,7 @@ function PaymentsPage() {
       ) : (
         <>
           <div className="container text-center">
-            <h1 className="text-danger "> Vendor Payments</h1>
+            <h1 className="text-danger "> Paid Vendors </h1>
           </div>
 
           <div
@@ -200,4 +189,4 @@ function PaymentsPage() {
     </>
   );
 }
-export default PaymentsPage;
+export default PaidVendorsPage;
