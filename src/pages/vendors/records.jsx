@@ -61,30 +61,23 @@ function VendorsPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data[0]);
-        data.map((i) => {
-          // i.total_dinar = i.total_dinar.toLocaleString("en-US", {
-          //   style: "currency",
-          //   currency: "IQD",
-          //   minimumFractionDigits: 0,
-          //   maximumFractionDigits: 2,
-          // });
+        console.log(data);
 
-          // i.total_dollar = i.total_dollar.toLocaleString("en-US", {
-          //   style: "currency",
-          //   currency: "USD",
-          //   minimumFractionDigits: 0,
-          //   maximumFractionDigits: 2,
-          // });
-
+        // console.log(data[0]);
+        data?.map((i) => {
           i.created_at = formatDate(new Date(i.created_at));
+          i.pay_period = i.pay_period.title;
+          i.pay_type = i.pay_type.title;
         });
+
         setData(data);
       })
       .catch((error) => {
         alert(error);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    setLoading(false);
   }
 
   useEffect(() => {
@@ -198,42 +191,17 @@ function VendorsPage() {
           <div className="container text-center ">
             <h1> Vendors</h1>
           </div>
-          {/* <div className="container mt-2 mb-2 text-center d-flex">
-            <form onSubmit={handleSubmit}>
-              <input
-                type="file"
-                className="form-control"
-                onChange={handleFileChange}
-              />
-            </form>
-            <button
-              className="btn btn-light rounded"
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Upload
-            </button>
-          </div> */}
-          <div
-            className="container text-center"
-            style={{
-              display:
-                localStorage.getItem("user_type") === "view" ? "none" : "block",
-            }}
-          ></div>
 
           <BootstrapTable
             className="text-center"
             hover={true}
             bordered={false}
-            bootstrap4
             keyField="id"
             columns={columns}
             data={data}
             pagination={pagination}
             filter={filterFactory()}
             // rowEvents={rowEvents}
-            style={{ overflowX: "auto" }}
           />
         </div>
       )}

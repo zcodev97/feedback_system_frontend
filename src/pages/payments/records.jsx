@@ -39,6 +39,9 @@ function PaymentsPage() {
       navigate("/payment_details", {
         state: {
           row: row,
+          data: data,
+          startDate: startDate,
+          endDate: endDate,
         },
       });
     },
@@ -140,6 +143,49 @@ function PaymentsPage() {
       });
   }
 
+  async function payAllVendors() {
+    data?.vendor_summary?.map((i) => {
+      fetch(SYSTEM_URL + "create_payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+
+        body: JSON.stringify({
+          vendor_id: i.vendor_id,
+          vendor_name: i.vendor_name,
+          date_from: i.date_from,
+          date_to: i.date_to,
+          number: i.number,
+          amount: i.amount,
+          is_paid: true,
+          orders: i.orders,
+          payment_cycle: i.payment_cycle,
+          payment_method: i.payment_method,
+          created_by: localStorage.getItem("user_id"),
+        }),
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json();
+          }
+          return {};
+        })
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert(error + "😕");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    });
+    console.log("completed");
+  }
+
   async function loadPaymentForGivenDate() {
     setLoading(true);
     await fetch(
@@ -160,7 +206,8 @@ function PaymentsPage() {
         if (data.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
-        data[0]?.map((i) => {
+        console.log(data);
+        data?.vendor_summary.map((i) => {
           i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
             style: "currency",
             currency: "IQD",
@@ -168,14 +215,14 @@ function PaymentsPage() {
             maximumFractionDigits: 2,
           });
 
-          // i.created_at = formatDate(new Date(i.created_at));
+          i.is_paid = i.is_paid ? true : false;
           // i.date_from = formatDate(new Date(i.date_from));
           // i.date_to = formatDate(new Date(i.date_to));
           // i.payment_cycle = i.payment_cycle.title;
           // i.payment_method = i.payment_method.title;
         });
-        console.log(data);
-        setData(data.vendor_summary);
+
+        setData(data?.vendor_summary);
       })
       .catch((error) => {
         alert(error);
@@ -186,6 +233,12 @@ function PaymentsPage() {
   }
 
   const vendorPaymentsColumns = [
+    {
+      dataField: "is_paid",
+      text: "is_paid",
+      sort: true,
+      filter: textFilter(),
+    },
     {
       dataField: "order_count",
       text: "order_count",
@@ -248,11 +301,24 @@ function PaymentsPage() {
       sort: true,
       filter: textFilter(),
     },
+    {
+      dataField: "vendor_id",
+      text: "vendor_id",
+      sort: true,
+      filter: textFilter(),
+    },
   ];
   useEffect(() => {
-    loadPaymentsMethod();
-    loadPaymentsCycle();
-    loadVendors();
+    // loadPaymentsMethod();
+    // loadPaymentsCycle();
+    // loadVendors();
+
+    if (location?.state?.data.length > 0) {
+      setData(location?.state?.data);
+      setStartDate(location?.state?.start_date);
+      setEndDate(location?.state?.end_date);
+    }
+
     // loadPaymentForGivenDate();
   }, []);
   return (
@@ -266,7 +332,7 @@ function PaymentsPage() {
           <div className="container text-center">
             <h1 className="text-danger "> Payments</h1>
           </div>
-          <div className="container d-flex mt-2 mb-2">
+          {/* <div className="container d-flex mt-2 mb-2">
             <div className="container ">
               Vendor
               <Select
@@ -294,7 +360,7 @@ function PaymentsPage() {
                 placeholder={"Payment Cycle"}
               />
             </div>
-          </div>
+          </div> */}
 
           <div
             className="container d-flex mt-2 mb-2"
@@ -323,12 +389,24 @@ function PaymentsPage() {
             </div>
           </div>
 
-          <div className="container text-center">
+          <div
+            className="container text-center d-flex
+          justify-content-center
+          align-items-center
+          "
+          >
             <button
-              className="btn btn-warning"
+              className="btn btn-light text-dark m-1"
               onClick={loadPaymentForGivenDate}
             >
-              Get Orders
+              <b> Get Orders</b>
+            </button>
+
+            <button
+              className="btn btn-light text-success  m-1"
+              onClick={payAllVendors}
+            >
+              <b> Pay All Vendors </b>
             </button>
           </div>
 
