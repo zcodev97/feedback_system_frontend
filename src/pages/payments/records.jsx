@@ -22,10 +22,26 @@ function PaymentsPage() {
   const [endDate, setEndDate] = useState(new Date());
 
   const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); // Filtered data for the table
+
+  const exportToPDF = () => {
+    // Save the current document title
+    const originalTitle = document.title;
+
+    // Set the document title to the custom title
+    document.title = ` حسابات مطاعم   -  ${formatDate(
+      startDate
+    )} - ${formatDate(endDate)}.pdf`;
+    window.print();
+
+    window.addEventListener("afterprint", () => {
+      document.title = originalTitle;
+    });
+  };
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 5,
+    sizePerPage: 10000,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
@@ -128,9 +144,10 @@ function PaymentsPage() {
       .then((response) => response.json())
       .then((response) => {
         response.forEach((i) => {
+          // console.log(i);
           dropdownMenuVendorsTemp.push({
             label: i.name,
-            value: i.id,
+            value: i.vendor_id,
           });
         });
         setVendorsDropDownMenu(dropdownMenuVendorsTemp);
@@ -193,6 +210,11 @@ function PaymentsPage() {
 
   async function loadPaymentForGivenDate() {
     setLoading(true);
+    setFilteredData([]);
+    setData([]);
+    setSelectedPaymentCycle("");
+    setSelectedVendor("");
+    setSelectedPaymentMethod("");
     await fetch(
       SYSTEM_URL +
         `vendor-payments-summary/?start_date=${formatDate(
@@ -211,23 +233,29 @@ function PaymentsPage() {
         if (data.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
-        // console.log(data);
-        data.map((i) => {
-          i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
-            style: "currency",
-            currency: "IQD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
+        console.log(data);
+
+        data = data.filter((i) => i.orders.length > 0);
+        if (data.length > 0) {
+          data.map((i) => {
+            i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
+              style: "currency",
+              currency: "IQD",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            });
+
+            i.is_paid = i.is_paid ? true : false;
+            // i.date_from = formatDate(new Date(i.date_from));
+            // i.date_to = formatDate(new Date(i.date_to));
+            // i.payment_cycle = i.payment_cycle.title;
+            // i.payment_method = i.payment_method.title;
           });
 
-          i.is_paid = i.is_paid ? true : false;
-          // i.date_from = formatDate(new Date(i.date_from));
-          // i.date_to = formatDate(new Date(i.date_to));
-          // i.payment_cycle = i.payment_cycle.title;
-          // i.payment_method = i.payment_method.title;
-        });
-
-        setData(data);
+          setData(data);
+        } else {
+          alert("No Orders Found With Given Period");
+        }
       })
       .catch((error) => {
         alert(error);
@@ -323,9 +351,43 @@ function PaymentsPage() {
       setStartDate(location?.state?.start_date);
       setEndDate(location?.state?.end_date);
     }
-
-    // loadPaymentForGivenDate();
   }, []);
+
+  function handleVendorFilter(opt) {
+    setLoading(true);
+
+    let filtered = data;
+
+    filtered = filtered.filter((item) => item.vendor_id === opt.value);
+
+    setFilteredData(filtered);
+    setLoading(false);
+  }
+  function handlePaymentMethodFilter(opt) {
+    setLoading(true);
+
+    // if(filteredData.length !== 0 ){
+
+    // }
+
+    let filtered = data;
+
+    filtered = filtered.filter((item) => item.pay_type === opt.label);
+
+    setFilteredData(filtered);
+    setLoading(false);
+  }
+  function handlePaymentCycleFilter(opt) {
+    setLoading(true);
+
+    let filtered = data;
+
+    filtered = filtered.filter((item) => item.pay_period === opt.label);
+
+    setFilteredData(filtered);
+    setLoading(false);
+  }
+
   return (
     <>
       <NavBar />
@@ -334,35 +396,70 @@ function PaymentsPage() {
         <Loading />
       ) : (
         <>
-          <div className="container text-center">
+          <div className="container text-center" id="no-print">
             <h1 className="text-danger "> Payments</h1>
           </div>
+
+          <div className="container" id="no-print">
+            <div
+              className="btn btn-light border border-2 border-warning text-dark m-2"
+              onClick={() => {
+                exportToPDF();
+              }}
+              id="no-print"
+            >
+              <b>تحميل</b>
+            </div>
+            <button
+              className="btn btn-light"
+              onClick={() => {
+                setLoading(true);
+                setFilteredData([]);
+                setSelectedPaymentCycle("");
+                setSelectedVendor("");
+                setSelectedPaymentMethod("");
+                setLoading(false);
+              }}
+            >
+              Clear Filters
+            </button>
+          </div>
           <div className="container d-flex mt-2 mb-2">
-            <div className="container ">
+            <div className="container " id="no-print">
               Vendor
               <Select
                 defaultValue={selectedVendor}
                 options={vendorsDropDownMenu}
-                onChange={(opt) => setSelectedVendor(opt)}
-                placeholder={"Vendor"}
+                onChange={(opt) => {
+                  setSelectedVendor(opt);
+                  handleVendorFilter(opt);
+                }}
+                value={selectedVendor}
               />
             </div>
-            <div className="container ">
+            <div className="container " id="no-print">
               Payment Method
               <Select
                 defaultValue={selectedPaymentMethod}
                 options={paymentMethodDropDown}
-                onChange={(opt) => setSelectedPaymentMethod(opt)}
-                placeholder={"Payment Method"}
+                onChange={(opt) => {
+                  handlePaymentMethodFilter(opt);
+                  setSelectedPaymentMethod(opt);
+                }}
+                value={selectedPaymentMethod}
               />
             </div>
-            <div className="container ">
+            <div className="container " id="no-print">
               Payment Cycle
               <Select
                 defaultValue={selectedPaymentCycle}
                 options={paymentCycleDropDown}
-                onChange={(opt) => setSelectedPaymentCycle(opt)}
-                placeholder={"Payment Cycle"}
+                onChange={(opt) => {
+                  handlePaymentCycleFilter(opt);
+
+                  setSelectedPaymentCycle(opt);
+                }}
+                value={selectedPaymentCycle}
               />
             </div>
           </div>
@@ -370,6 +467,7 @@ function PaymentsPage() {
           <div
             className="container d-flex mt-2 mb-2"
             style={{ width: "300px" }}
+            id="no-print"
           >
             <div className="container">
               Start Date
@@ -399,6 +497,7 @@ function PaymentsPage() {
           justify-content-center
           align-items-center
           "
+            id="no-print"
           >
             <button
               className="btn btn-light text-dark m-1"
@@ -417,20 +516,27 @@ function PaymentsPage() {
 
           <div
             className="container-fluid text-center"
-            style={{ overflowX: "auto" }}
+            style={{
+              overflowX: "auto",
+              width: "100%",
+              fontSize: "12px",
+            }}
           >
-            <BootstrapTable
-              className="text-center"
-              hover={true}
-              bordered={false}
-              bootstrap4
-              keyField="id"
-              columns={vendorPaymentsColumns}
-              data={data}
-              pagination={pagination}
-              rowEvents={rowEvents}
-              filter={filterFactory()}
-            />
+            <table className="table table-sm">
+              <BootstrapTable
+                id="payment-table"
+                className="text-center"
+                hover={true}
+                bordered={false}
+                bootstrap4
+                keyField="id"
+                columns={vendorPaymentsColumns}
+                data={filteredData.length > 0 ? filteredData : data}
+                pagination={pagination}
+                rowEvents={rowEvents}
+                filter={filterFactory()}
+              />
+            </table>
           </div>
         </>
       )}

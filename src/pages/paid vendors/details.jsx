@@ -33,60 +33,80 @@ function PaidVendorOrdersPage() {
     //   dataField: "cancellation_reason",
     //   text: "cancellation_reason",
     //   sort: true,
-    //   filter: textFilter(),
+    // filter: textFilter(),
     // },
     // {
     //   dataField: "cancellation_type",
     //   text: "cancellation_type",
     //   sort: true,
-    //   filter: textFilter(),
+    // filter: textFilter(),
     // },
     // {
     //   dataField: "commission_percentage",
     //   text: "commission_percentage",
     //   sort: true,
-    //   filter: textFilter(),
+    // filter: textFilter(),
     // },
     // {
     //   dataField: "commission_value",
     //   text: "commission_value",
     //   sort: true,
-    //   filter: textFilter(),
+    // filter: textFilter(),
     // },
     // {
     //   dataField: "hybrid_payment",
     //   text: "hybrid_payment",
     //   sort: true,
-    //   filter: textFilter(),
+    // filter: textFilter(),
     // },
     // {
     //   dataField: "lastStatus",
     //   text: "lastStatus",
     //   sort: true,
-    //   filter: textFilter(),
+    // filter: textFilter(),
     // },
-    {
-      dataField: "order_date",
-      text: "order_date",
-      sort: true,
-      filter: textFilter(),
-    },
     {
       dataField: "order_id",
       text: "order_id",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
 
+    {
+      dataField: "order_date",
+      text: "order_date",
+      sort: true,
+      // filter: textFilter(),
+    },
+
+    {
+      dataField: "refund",
+      text: "refund",
+      sort: true,
+      // filter: textFilter(),
+    },
+    {
+      dataField: "subtotal",
+      text: "subtotal",
+      sort: true,
+      // filter: textFilter(),
+    },
+
+    {
+      dataField: "total_discount",
+      text: "total_discount",
+      sort: true,
+      // filter: textFilter(),
+    },
+    {
+      dataField: "vendor_discount",
+      text: "vendor_discount ",
+      sort: true,
+      // filter: textFilter(),
+    },
     // {
-    //   dataField: "refund",
-    //   text: "refund",
-    //   sort: true,
-    //   filter: textFilter(),
-    // },
-    // {
-    //   dataField: "subtotal",
-    //   text: "subtotal",
+    //   dataField: "vendor_discount_cap",
+    //   text: "vendor_discount_cap",
     //   sort: true,
     //   filter: textFilter(),
     // },
@@ -94,39 +114,8 @@ function PaidVendorOrdersPage() {
       dataField: "to_be_paid",
       text: "to_be_paid",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
-    {
-      dataField: "total_discount",
-      text: "total_discount",
-      sort: true,
-      filter: textFilter(),
-    },
-    // {
-    //   dataField: "vendor",
-    //   text: "vendor",
-    //   sort: true,
-    //   filter: textFilter(),
-    // },
-
-    {
-      dataField: "vendor_discount",
-      text: "vendor_discount ",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "vendor_discount_cap",
-      text: "vendor_discount_cap",
-      sort: true,
-      filter: textFilter(),
-    },
-    // {
-    //   dataField: "vendor_id",
-    //   text: "vendor_id",
-    //   sort: true,
-    //   filter: textFilter(),
-    // },
   ];
 
   console.log(location.state.row.orders);
@@ -150,6 +139,18 @@ function PaidVendorOrdersPage() {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
     });
+    i.vendor_discount = i.vendor_discount?.toLocaleString("en-US", {
+      style: "currency",
+      currency: "IQD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+    i.total_discount = i.total_discount?.toLocaleString("en-US", {
+      style: "currency",
+      currency: "IQD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
 
     i.order_date = formatDate(new Date(i.order_date));
     // i.date_from = formatDate(new Date(i.date_from));
@@ -168,12 +169,15 @@ function PaidVendorOrdersPage() {
           style={{ overflowX: "auto" }}
         >
           <div className="container text-center" style={{ fontSize: "20px" }}>
-            <b> Paid Orders For Vendor {location.state.row.vendor} </b>
+            <p>
+              {" "}
+              Paid Orders For Vendor <b> {location.state.row.vendor} </b>{" "}
+            </p>
             <hr />
-            <b>
-              Period {location.state.row.date_from} to{" "}
+            <p>
+              {location.state.row.date_from} <b>to </b>{" "}
               {location.state.row.date_to}
-            </b>
+            </p>
           </div>
           <hr />
 
