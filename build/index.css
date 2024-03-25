@@ -1,0 +1,102 @@
+.active-link {
+  background-color: #007bff; /* Example color */
+  color: white;
+}
+
+.react-datetime-picker__wrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  border: solid gray;
+  border-radius: 20px;
+  border-width: 1px;
+  padding: 5px;
+}
+
+.sr-only {
+  display: none;
+}
+
+.react-bootstrap-table table {
+  table-layout: auto !important;
+  text-align: center;
+  /* border-color: rgb(253, 97, 0); */
+}
+
+/* for print */
+@media print {
+  .sr-only {
+    display: none !important;
+  }
+
+  #payment-table-pageDropDown {
+    display: none;
+  }
+
+  @page {
+    size: landscape;
+  }
+  .react-bootstrap-table-pagination-total {
+    display: none;
+  }
+
+  #pageDropDown {
+    display: none;
+  }
+  .react-bootstrap-table-pagination-list {
+    display: none;
+  }
+
+  .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #b71646;
+    background-color: rgb(253, 97, 0);
+    color: rgb(58, 56, 56);
+    font-weight: bold;
+  }
+
+  table {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  body {
+    height: 210mm; /* Width of A4 paper */
+    width: 297mm; /* Height of A4 paper */
+    margin: 0;
+    padding: 0;
+    font-size: 12pt; /* Adjust font size for printing */
+  }
+
+  #payment-table {
+    width: 100%; /* Make the table use the full width */
+    table-layout: fixed; /* Ensure all columns are of equal width */
+    border-collapse: collapse; /* Collapse borders */
+  }
+
+  #payment-table th,
+  #payment-table td {
+    border: 1px solid black; /* Add borders to table cells */
+    padding: 5px; /* Add padding to table cells */
+  }
+
+  footer {
+    display: block !important;
+  }
+  /* body {
+    width: 100%;
+    position: relative;
+  } */
+
+  #no-print {
+    display: none;
+  }
+
+  /* Additional print-specific styles can go here */
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+}
