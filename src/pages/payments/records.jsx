@@ -332,7 +332,7 @@ function PaymentsPage() {
       dataField: "vendor",
       text: "vendor",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "vendor_id",
@@ -420,32 +420,13 @@ function PaymentsPage() {
             <h1 className="text-danger "> Payments</h1>
           </div>
 
-          <div className="container" id="no-print">
+          <div className="container-fluid d-flex mt-2 mb-2">
             <div
-              className="btn btn-light border border-2 border-warning text-dark m-2"
-              onClick={() => {
-                exportToPDF();
-              }}
-              id="no-print"
-            >
-              <b>تحميل</b>
-            </div>
-            <button
-              className="btn btn-light"
-              onClick={() => {
-                setLoading(true);
-                setFilteredData([]);
-                setSelectedPaymentCycle("");
-                setSelectedVendor("");
-                setSelectedPaymentMethod("");
-                setLoading(false);
+              className="container "
+              style={{
+                display: data?.length > 0 ? "inline" : "none",
               }}
             >
-              Clear Filters
-            </button>
-          </div>
-          <div className="container d-flex mt-2 mb-2">
-            <div className="container " id="no-print">
               Vendor
               <Select
                 defaultValue={selectedVendor}
@@ -457,7 +438,12 @@ function PaymentsPage() {
                 value={selectedVendor}
               />
             </div>
-            <div className="container " id="no-print">
+            <div
+              className="container "
+              style={{
+                display: data?.length > 0 ? "inline" : "none",
+              }}
+            >
               Payment Method
               <Select
                 defaultValue={selectedPaymentMethod}
@@ -469,7 +455,12 @@ function PaymentsPage() {
                 value={selectedPaymentMethod}
               />
             </div>
-            <div className="container " id="no-print">
+            <div
+              className="container "
+              style={{
+                display: data?.length > 0 ? "inline" : "none",
+              }}
+            >
               Payment Cycle
               <Select
                 defaultValue={selectedPaymentCycle}
@@ -481,6 +472,25 @@ function PaymentsPage() {
                 }}
                 value={selectedPaymentCycle}
               />
+            </div>
+            <div className="container  d-flex align-items-end justify-content-center">
+              <div
+                style={{
+                  display: data?.length > 0 ? "inline" : "none",
+                }}
+                className="btn btn-danger"
+                onClick={() => {
+                  setLoading(true);
+                  setFilteredData([]);
+                  setSelectedPaymentCycle("");
+                  setSelectedVendor("");
+                  setSelectedPaymentMethod("");
+                  setLoading(false);
+                }}
+                id="no-print"
+              >
+                Clear Filters
+              </div>
             </div>
           </div>
 
@@ -520,18 +530,36 @@ function PaymentsPage() {
             id="no-print"
           >
             <button
-              className="btn btn-light text-dark m-1"
+              className="btn btn-primary text-light m-1"
               onClick={loadPaymentForGivenDate}
+              id="no-print"
             >
-              <b> Get Orders</b>
+              <b> Get </b>
             </button>
 
             <button
-              className="btn btn-light text-success  m-1"
+              className="btn btn-success text-light  m-1"
               onClick={payAllVendors}
+              style={{
+                display: data?.length > 0 ? "inline" : "none",
+              }}
+              id="no-print"
             >
-              <b> Pay All Vendors </b>
+              <b> Pay </b>
             </button>
+
+            <div
+              className="btn btn-warning text-dark border border-2 border-warning text-dark m-2"
+              onClick={() => {
+                exportToPDF();
+              }}
+              style={{
+                display: data?.length > 0 ? "inline" : "none",
+              }}
+              id="no-print"
+            >
+              <b>Download</b>
+            </div>
           </div>
 
           <div
@@ -545,10 +573,10 @@ function PaymentsPage() {
             <table className="table table-sm">
               <BootstrapTable
                 id="payment-table"
-                className="text-center"
                 hover={true}
                 bordered={false}
                 bootstrap4
+                striped={true}
                 keyField="id"
                 columns={vendorPaymentsColumns}
                 data={filteredData.length > 0 ? filteredData : data}

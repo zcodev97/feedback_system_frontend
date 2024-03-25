@@ -169,7 +169,7 @@ function VendorsPage() {
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 5,
+    sizePerPage: 10,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
@@ -192,7 +192,7 @@ function VendorsPage() {
             <h1> Vendors</h1>
           </div>
 
-          <div className="container mt-2 mb-2 text-center d-flex">
+          {/* <div className="container mt-2 mb-2 text-center d-flex">
             <form onSubmit={handleSubmit}>
               <input
                 type="file"
@@ -207,19 +207,30 @@ function VendorsPage() {
             >
               Upload
             </button>
-          </div>
+          </div> */}
 
-          <BootstrapTable
-            className="text-center"
-            hover={true}
-            bordered={false}
-            keyField="id"
-            columns={columns}
-            data={data}
-            pagination={pagination}
-            filter={filterFactory()}
-            // rowEvents={rowEvents}
-          />
+          <div
+            className="container-fluid text-center"
+            style={{
+              overflowX: "auto",
+              width: "100%",
+              fontSize: "14px",
+            }}
+          >
+            <table className="table table-sm">
+              <BootstrapTable
+                className="text-center"
+                hover={true}
+                bordered={false}
+                keyField="id"
+                columns={columns}
+                data={data}
+                pagination={pagination}
+                filter={filterFactory()}
+                // rowEvents={rowEvents}
+              />
+            </table>
+          </div>
         </div>
       )}
     </>

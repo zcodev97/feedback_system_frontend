@@ -1,3 +1,8 @@
+.active-link {
+  background-color: #007bff; /* Example color */
+  color: white;
+}
+
 .react-datetime-picker__wrapper {
   display: flex;
   flex-grow: 1;
@@ -22,6 +27,10 @@
 @media print {
   .sr-only {
     display: none !important;
+  }
+
+  #payment-table-pageDropDown {
+    display: none;
   }
 
   @page {

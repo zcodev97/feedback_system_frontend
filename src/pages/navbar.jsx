@@ -7,6 +7,11 @@ import "@flaticon/flaticon-uicons/css/all/all.css";
 function NavBar() {
   const navigate = useNavigate();
 
+  const [activeLink, setActiveLink] = useState("");
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+  };
+
   let navLinkClassName = "nav-link text-dark rounded border";
 
   const [loading, setLoading] = useState(false);
@@ -63,7 +68,10 @@ function NavBar() {
             <ul className="navbar-nav">
               <li className="nav-item rounded m-1">
                 <Link
-                  className={navLinkClassName}
+                  onClick={() => handleLinkClick("vendors")}
+                  className={`${navLinkClassName} ${
+                    activeLink === "vendors" ? "active-link" : ""
+                  }`}
                   to="/vendors"
                   style={{ fontSize: "20px", color: "red" }}
                 >
@@ -71,7 +79,13 @@ function NavBar() {
                 </Link>
               </li>
               <li className="nav-item rounded m-1">
-                <Link className={navLinkClassName} to="/vendors">
+                <Link
+                  onClick={() => handleLinkClick("vendors")}
+                  className={`${navLinkClassName} ${
+                    activeLink === "vendors" ? "active-link" : ""
+                  }`}
+                  to="/vendors"
+                >
                   <h5>Vendors</h5>
                 </Link>
               </li>
@@ -100,11 +114,6 @@ function NavBar() {
               </li>
             </ul>
           </div>
-          {/* End of the main navbar content */}
-
-          {/* Start of user/logout buttons */}
-
-          {/* End of user/logout buttons */}
         </div>
       </nav>
 

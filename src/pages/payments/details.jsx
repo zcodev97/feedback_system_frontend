@@ -12,6 +12,20 @@ import "react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 function PaymentDetialsPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const exportToPDF = () => {
+    // Save the current document title
+    const originalTitle = document.title;
+
+    // Set the document title to the custom title
+    document.title = ` حسابات مطعم   -  ${formatDate(
+      start_date
+    )} - ${formatDate(end_date)}.pdf`;
+    window.print();
+
+    window.addEventListener("afterprint", () => {
+      document.title = originalTitle;
+    });
+  };
 
   const previousData = location.state.data;
   const start_date = location.state.startDate;
@@ -19,7 +33,7 @@ function PaymentDetialsPage() {
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 5,
+    sizePerPage: location.state.row.orders.length,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
@@ -69,13 +83,13 @@ function PaymentDetialsPage() {
       dataField: "order_date",
       text: "order_date",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "order_id",
       text: "order_id",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
 
     // {
@@ -94,38 +108,32 @@ function PaymentDetialsPage() {
       dataField: "to_be_paid",
       text: "to_be_paid",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "total_discount",
       text: "total_discount",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
-    {
-      dataField: "vendor",
-      text: "vendor",
-      sort: true,
-      filter: textFilter(),
-    },
+    // {
+    //   dataField: "vendor",
+    //   text: "vendor",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
 
     {
       dataField: "vendor_discount",
       text: "vendor_discount ",
       sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
     {
       dataField: "vendor_discount_cap",
       text: "vendor_discount_cap",
       sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "vendor_id",
-      text: "vendor_id",
-      sort: true,
-      filter: textFilter(),
+      // filter: textFilter(),
     },
   ];
 
@@ -160,31 +168,68 @@ function PaymentDetialsPage() {
     <>
       <NavBar />
 
-      <button
-        className="btn btn-danger"
-        onClick={() => {
-          navigate("/payments", {
-            replace: true,
-            state: {
-              data: previousData,
-              start_date: start_date,
-              end_date: end_date,
-            },
-          });
-        }}
-      >
-        back
-      </button>
+      <div className="container-fluid">
+        <button
+          className="btn btn-danger"
+          onClick={() => {
+            navigate("/payments", {
+              replace: true,
+              state: {
+                data: previousData,
+                start_date: start_date,
+                end_date: end_date,
+              },
+            });
+          }}
+          id="no-print"
+        >
+          back
+        </button>
+
+        <div
+          className="btn btn-warning text-dark border border-2 border-warning text-dark m-2"
+          onClick={() => {
+            exportToPDF();
+          }}
+          id="no-print"
+        >
+          <b>Download</b>
+        </div>
+      </div>
+
+      <div className="container-fluid d-flex mt-2 mb-2">
+        <div className="container text-center d-flex">
+          <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+            {location.state.row.orders[0].vendor}
+          </p>
+        </div>
+
+        <div className="container text-center">
+          <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+            {location.state.row.start_date} to {location.state.row.end_date}
+          </p>
+        </div>
+        <div className="container text-center">
+          <p style={{ fontSize: "20px", fontWeight: "bold" }}>
+            {location.state.row.orders[0].vendor_id}
+          </p>
+        </div>
+      </div>
 
       <div className="container-fluid" style={{ overflowX: "auto" }}>
         <div
           className="container-fluid text-center"
-          style={{ overflowX: "auto" }}
+          style={{
+            overflowX: "auto",
+            width: "100%",
+            fontSize: "12px",
+          }}
         >
           <BootstrapTable
             className="text-center"
             hover={true}
             bordered={false}
+            striped={true}
             bootstrap4
             keyField="id"
             columns={vendorPaymentsColumns}
