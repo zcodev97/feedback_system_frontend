@@ -118,7 +118,7 @@ function PaidVendorOrdersPage() {
     },
   ];
 
-  console.log(location.state.row.orders);
+  // console.log(location.state.row.orders);
 
   location.state.row.orders?.map((i) => {
     i.to_be_paid = i.to_be_paid?.toLocaleString("en-US", {

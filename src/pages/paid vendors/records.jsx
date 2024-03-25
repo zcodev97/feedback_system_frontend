@@ -59,7 +59,7 @@ function PaidVendorsPage() {
           navigate("/login", { replace: true });
         }
 
-        console.log(data);
+        // console.log(data);
 
         data?.map((i) => {
           i.amount = i.amount.toLocaleString("en-US", {

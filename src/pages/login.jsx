@@ -67,7 +67,7 @@ function Login() {
           }
         )
           .then((response) => {
-            console.log(response.status);
+            // console.log(response.status);
             if (response.status === 401) {
               alert("username or password is incorrect");
               return;
@@ -78,7 +78,7 @@ function Login() {
           })
           .then((data) => {
             if (data.detail) {
-              console.log(data);
+              // console.log(data);
 
               alert(data.detail);
               return;
