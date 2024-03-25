@@ -41,7 +41,7 @@ function PaymentsPage() {
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 10000,
+    sizePerPage: data?.length,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
@@ -363,24 +363,44 @@ function PaymentsPage() {
     setFilteredData(filtered);
     setLoading(false);
   }
-  function handlePaymentMethodFilter(opt) {
+  function handlePaymentMethodFilter(opt, selectedPaymentCycle) {
     setLoading(true);
-
-    // if(filteredData.length !== 0 ){
-
-    // }
-
     let filtered = data;
+
+    if (selectedPaymentCycle) {
+      filtered = data.filter(
+        (item) =>
+          item.pay_type === opt.label &&
+          item.pay_period === selectedPaymentCycle.label
+      );
+      setFilteredData(filtered);
+      setLoading(false);
+      return;
+    }
 
     filtered = filtered.filter((item) => item.pay_type === opt.label);
 
     setFilteredData(filtered);
     setLoading(false);
   }
-  function handlePaymentCycleFilter(opt) {
+
+  //
+  function handlePaymentCycleFilter(opt, selectedPaymentMethod) {
     setLoading(true);
 
     let filtered = data;
+
+    if (selectedPaymentMethod) {
+      console.log(selectedPaymentMethod);
+      filtered = data.filter(
+        (item) =>
+          item.pay_period === opt.label &&
+          item.pay_type === selectedPaymentMethod.label
+      );
+      setFilteredData(filtered);
+      setLoading(false);
+      return;
+    }
 
     filtered = filtered.filter((item) => item.pay_period === opt.label);
 
@@ -443,7 +463,7 @@ function PaymentsPage() {
                 defaultValue={selectedPaymentMethod}
                 options={paymentMethodDropDown}
                 onChange={(opt) => {
-                  handlePaymentMethodFilter(opt);
+                  handlePaymentMethodFilter(opt, selectedPaymentCycle);
                   setSelectedPaymentMethod(opt);
                 }}
                 value={selectedPaymentMethod}
@@ -455,7 +475,7 @@ function PaymentsPage() {
                 defaultValue={selectedPaymentCycle}
                 options={paymentCycleDropDown}
                 onChange={(opt) => {
-                  handlePaymentCycleFilter(opt);
+                  handlePaymentCycleFilter(opt, selectedPaymentMethod);
 
                   setSelectedPaymentCycle(opt);
                 }}

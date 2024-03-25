@@ -61,7 +61,7 @@ function VendorsPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
 
         // console.log(data[0]);
         data?.map((i) => {
@@ -190,6 +190,23 @@ function VendorsPage() {
         >
           <div className="container text-center ">
             <h1> Vendors</h1>
+          </div>
+
+          <div className="container mt-2 mb-2 text-center d-flex">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="file"
+                className="form-control"
+                onChange={handleFileChange}
+              />
+            </form>
+            <button
+              className="btn btn-light rounded"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Upload
+            </button>
           </div>
 
           <BootstrapTable
