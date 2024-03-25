@@ -162,48 +162,80 @@ function PaymentsPage() {
 
   async function payAllVendors() {
     setLoading(true);
-    try {
-      const promises = data.map(async (i) => {
-        const paymentCycleID = paymentCycleDropDown.find(
-          (j) => j.label === i.pay_period
-        )?.value;
-        const paymentMethodID = paymentMethodDropDown.find(
-          (j) => j.label === i.pay_type
-        )?.value;
 
-        const response = await fetch(SYSTEM_URL + "create_payment/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            vendor_id: i.vendor_id,
-            vendor: i.vendor,
-            date_from: formatDate(i.start_date),
-            date_to: formatDate(i.end_date),
-            number: i.number,
-            amount: i.to_be_paid,
-            is_paid: true,
-            orders: i.orders,
-            orders_count: i.order_count,
-            payment_cycle: paymentCycleID,
-            payment_method: paymentMethodID,
-            created_by: localStorage.getItem("user_id"),
-          }),
+    try {
+      if (filteredData.lenght > 0) {
+        console.log("tes2222");
+
+        const promises = filteredData.map(async (i) => {
+          const paymentCycleID = paymentCycleDropDown.find(
+            (j) => j.label === i.pay_period
+          )?.value;
+          const paymentMethodID = paymentMethodDropDown.find(
+            (j) => j.label === i.pay_type
+          )?.value;
+
+          const response = await fetch(SYSTEM_URL + "create_payment/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify(data),
+          });
+
+          const data = await response.json();
+
+          // console.log(data);
         });
 
-        const data = await response.json();
-        // console.log(data);
-      });
+        await Promise.all(promises);
+      } else {
+        console.log("test3333");
 
-      await Promise.all(promises);
+        const promises = data.map(async (i) => {
+          const paymentCycleID = paymentCycleDropDown.find(
+            (j) => j.label === i.pay_period
+          )?.value;
+          const paymentMethodID = paymentMethodDropDown.find(
+            (j) => j.label === i.pay_type
+          )?.value;
+
+          const response = await fetch(SYSTEM_URL + "create_payment/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              vendor_id: i.vendor_id,
+              vendor: i.vendor,
+              date_from: formatDate(i.start_date),
+              date_to: formatDate(i.end_date),
+              number: i.number,
+              amount: i.to_be_paid,
+              is_paid: true,
+              orders: i.orders,
+              orders_count: i.order_count,
+              payment_cycle: paymentCycleID,
+              payment_method: paymentMethodID,
+              created_by: localStorage.getItem("user_id"),
+            }),
+          });
+
+          const data = await response.json();
+          // console.log(data);
+        });
+
+        await Promise.all(promises);
+      }
     } catch (error) {
       console.error(error);
       alert(error + "😕");
     } finally {
       setLoading(false);
     }
+    navigate("/payments", { replace: true });
   }
 
   async function loadPaymentForGivenDate() {
