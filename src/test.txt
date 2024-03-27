@@ -1,0 +1,75 @@
+
+Here are the questions, options, and answers formatted with selectable numbering and additional margin for the choices and answers:
+
+1. What is the primary component responsible for arithmetic and logic operations in a computer?
+- a) Hard Drive
+- b) RAM
+- c) CPU
+- d) Motherboard
+
+r
+Copy code
+   Answer: c) CPU
+2. Which device is commonly used for navigating and selecting items on a computer screen?
+- a) Keyboard
+- b) Mouse
+- c) Monitor
+- d) Printer
+
+arduino
+Copy code
+   Answer: b) Mouse
+3. The term 'GPU' refers to which component in a computer system?
+- a) General Processing Unit
+- b) Graphics Processing Unit
+- c) Gaming Performance Unit
+- d) Graphic Peripheral Unit
+
+kotlin
+Copy code
+   Answer: b) Graphics Processing Unit
+4. In computer terminology, what does 'ROM' stand for?
+- a) Read-Only Memory
+- b) Random Operation Memory
+- c) Rapid Online Memory
+- d) Reusable Operating Memory
+
+mathematica
+Copy code
+   Answer: a) Read-Only Memory
+5. An operating system's primary function includes?
+- a) Managing hardware resources
+- b) Running applications
+- c) Providing a user interface
+- d) All of the above
+
+mathematica
+Copy code
+   Answer: d) All of the above
+6. What is the main purpose of an application software like Adobe Photoshop?
+- a) To manage hardware
+- b) To perform specific tasks
+- c) To provide internet connectivity
+- d) To store data
+
+sql
+Copy code
+   Answer: b) To perform specific tasks
+7. In computing, 'SSD' stands for what type of storage device?
+- a) Solid-State Drive
+- b) Super Speed Disk
+- c) Secure Storage Device
+- d) Standard Storage Drive
+
+yaml
+Copy code
+   Answer: a) Solid-State Drive
+8. Which of the following is a popular programming language for web development?
+- a) C++
+- b) Python
+- c) HTML
+- d) Java
+
+r
+Copy code
+   Answer: c) HTML

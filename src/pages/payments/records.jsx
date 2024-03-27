@@ -163,10 +163,38 @@ function PaymentsPage() {
   async function payAllVendors() {
     setLoading(true);
 
+    // console.log(data);
+    if (filteredData.length !== 0) {
+      try {
+        const response = await fetch(SYSTEM_URL + "create_payment/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(data),
+        });
+
+        const responseData = await response.json();
+        // console.log(responseData);
+        if (response.ok) {
+          console.log("Data saved successfully");
+        } else {
+          console.error("Failed to save data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error sending data:", error);
+      }
+
+      setLoading(false);
+
+      navigate("/paid_vendors", { replace: true });
+    }
+    setLoading(false);
+
+    return;
     try {
       if (filteredData.lenght > 0) {
-        console.log("tes2222");
-
         const promises = filteredData.map(async (i) => {
           const paymentCycleID = paymentCycleDropDown.find(
             (j) => j.label === i.pay_period
@@ -181,7 +209,20 @@ function PaymentsPage() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+              vendor_id: i.vendor_id,
+              vendor: i.vendor,
+              date_from: formatDate(i.start_date),
+              date_to: formatDate(i.end_date),
+              number: i.number,
+              amount: i.to_be_paid,
+              is_paid: true,
+              orders: i.orders,
+              orders_count: i.order_count,
+              payment_cycle: paymentCycleID,
+              payment_method: paymentMethodID,
+              created_by: localStorage.getItem("user_id"),
+            }),
           });
 
           const data = await response.json();
@@ -191,8 +232,6 @@ function PaymentsPage() {
 
         await Promise.all(promises);
       } else {
-        console.log("test3333");
-
         const promises = data.map(async (i) => {
           const paymentCycleID = paymentCycleDropDown.find(
             (j) => j.label === i.pay_period
@@ -280,9 +319,12 @@ function PaymentsPage() {
             // i.date_to = formatDate(new Date(i.date_to));
             // i.payment_cycle = i.payment_cycle.title;
             // i.payment_method = i.payment_method.title;
+            i.created_by = localStorage.getItem("user_id");
+            i.is_paid = true;
           });
-
+          console.log(data);
           setData(data);
+          setFilteredData(data);
         } else {
           alert("No Orders Found With Given Period");
         }

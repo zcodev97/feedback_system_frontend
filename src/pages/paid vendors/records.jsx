@@ -59,28 +59,22 @@ function PaidVendorsPage() {
           navigate("/login", { replace: true });
         }
 
-        // console.log(data);
-
         data?.map((i) => {
-          i.amount = i.amount.toLocaleString("en-US", {
+          i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
             style: "currency",
             currency: "IQD",
             minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
+            maximumFrwactionDigits: 2,
           });
 
-          i.date_from = formatDate(i.date_from);
-          i.date_to = formatDate(i.date_to);
+          i.start_date = formatDate(i.start_date);
+          i.end_date = formatDate(i.end_date);
 
           i.is_paid = i.is_paid ? true : false;
-          // i.date_from = formatDate(new Date(i.date_from));
-          // i.date_to = formatDate(new Date(i.date_to));
-          i.payment_cycle = i.payment_cycle.title;
-          i.payment_method = i.payment_method.title;
         });
 
         setData(data);
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         alert(error);
@@ -98,14 +92,14 @@ function PaidVendorsPage() {
       filter: textFilter(),
     },
     {
-      dataField: "orders_count",
-      text: "orders_count",
+      dataField: "order_count",
+      text: "order_count",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "amount",
-      text: "amount",
+      dataField: "to_be_paid",
+      text: "to_be_paid",
       sort: true,
       filter: textFilter(),
     },
@@ -116,27 +110,27 @@ function PaidVendorsPage() {
       filter: textFilter(),
     },
     {
-      dataField: "payment_method",
-      text: "payment_method",
+      dataField: "pay_type",
+      text: "pay_type",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "payment_cycle",
-      text: "payment_cycle",
+      dataField: "pay_period",
+      text: "pay_period",
       sort: true,
       filter: textFilter(),
     },
 
     {
-      dataField: "date_to",
-      text: "date_to ",
+      dataField: "start_date",
+      text: "start_date ",
       sort: true,
       filter: textFilter(),
     },
     {
-      dataField: "date_from",
-      text: "date_from",
+      dataField: "end_date",
+      text: "end_date",
       sort: true,
       filter: textFilter(),
     },

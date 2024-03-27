@@ -1,13 +1,3 @@
-// function formatDate(dateObject = new Date()) {
-//   const formattedDateString = `${dateObject.getFullYear()}-${(
-//     dateObject.getMonth() + 1
-//   )
-//     .toString()
-//     .padStart(2, "0")}-${dateObject.getDate().toString().padStart(2, "0")}`;
-
-//   return formattedDateString;
-// }
-
 function formatDate(date = new Date()) {
   var d = new Date(date),
     month = "" + (d.getMonth() + 1),
