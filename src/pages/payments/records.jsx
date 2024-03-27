@@ -512,24 +512,23 @@ function PaymentsPage() {
               >
                 <b> Get </b>
               </button>
-              <button
-                className="btn btn-success text-light m-1"
+              <div
                 onClick={payAllVendors}
                 style={{
                   display: data?.length > 0 ? "inline" : "none",
                 }}
                 id="no-print"
               >
-                <b>
-                  <pre>
+                <pre className="btn btn-success text-light m-1">
+                  <b>
                     Pay {(filteredData.length > 0 ? filteredData : data).length}{" "}
                     {(filteredData.length > 0 ? filteredData : data).length ===
                     1
                       ? "vendor"
                       : "vendors"}
-                  </pre>
-                </b>
-              </button>
+                  </b>
+                </pre>
+              </div>
               <button
                 className="btn btn-warning text-dark border border-2 border-warning text-dark m-1"
                 onClick={() => {
