@@ -172,11 +172,11 @@ function PaymentsPage() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(filteredData),
         });
 
         const responseData = await response.json();
-        // console.log(responseData);
+        console.log(responseData);
         if (response.ok) {
           console.log("Data saved successfully");
         } else {
@@ -191,90 +191,6 @@ function PaymentsPage() {
       navigate("/paid_vendors", { replace: true });
     }
     setLoading(false);
-
-    return;
-    try {
-      if (filteredData.lenght > 0) {
-        const promises = filteredData.map(async (i) => {
-          const paymentCycleID = paymentCycleDropDown.find(
-            (j) => j.label === i.pay_period
-          )?.value;
-          const paymentMethodID = paymentMethodDropDown.find(
-            (j) => j.label === i.pay_type
-          )?.value;
-
-          const response = await fetch(SYSTEM_URL + "create_payment/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify({
-              vendor_id: i.vendor_id,
-              vendor: i.vendor,
-              date_from: formatDate(i.start_date),
-              date_to: formatDate(i.end_date),
-              number: i.number,
-              amount: i.to_be_paid,
-              is_paid: true,
-              orders: i.orders,
-              orders_count: i.order_count,
-              payment_cycle: paymentCycleID,
-              payment_method: paymentMethodID,
-              created_by: localStorage.getItem("user_id"),
-            }),
-          });
-
-          const data = await response.json();
-
-          // console.log(data);
-        });
-
-        await Promise.all(promises);
-      } else {
-        const promises = data.map(async (i) => {
-          const paymentCycleID = paymentCycleDropDown.find(
-            (j) => j.label === i.pay_period
-          )?.value;
-          const paymentMethodID = paymentMethodDropDown.find(
-            (j) => j.label === i.pay_type
-          )?.value;
-
-          const response = await fetch(SYSTEM_URL + "create_payment/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify({
-              vendor_id: i.vendor_id,
-              vendor: i.vendor,
-              date_from: formatDate(i.start_date),
-              date_to: formatDate(i.end_date),
-              number: i.number,
-              amount: i.to_be_paid,
-              is_paid: true,
-              orders: i.orders,
-              orders_count: i.order_count,
-              payment_cycle: paymentCycleID,
-              payment_method: paymentMethodID,
-              created_by: localStorage.getItem("user_id"),
-            }),
-          });
-
-          const data = await response.json();
-          // console.log(data);
-        });
-
-        await Promise.all(promises);
-      }
-    } catch (error) {
-      console.error(error);
-      alert(error + "😕");
-    } finally {
-      setLoading(false);
-    }
-    navigate("/payments", { replace: true });
   }
 
   async function loadPaymentForGivenDate() {
@@ -313,12 +229,7 @@ function PaymentsPage() {
               minimumFractionDigits: 0,
               maximumFractionDigits: 2,
             });
-
             i.is_paid = i.is_paid ? true : false;
-            // i.date_from = formatDate(new Date(i.date_from));
-            // i.date_to = formatDate(new Date(i.date_to));
-            // i.payment_cycle = i.payment_cycle.title;
-            // i.payment_method = i.payment_method.title;
             i.created_by = localStorage.getItem("user_id");
             i.is_paid = true;
           });
@@ -567,7 +478,7 @@ function PaymentsPage() {
           </div>
 
           <div
-            className="container d-flex mt-2 mb-2"
+            className="container d-flex justify-content-center align-items-end mt-2 mb-2"
             style={{ width: "300px" }}
             id="no-print"
           >
@@ -592,45 +503,45 @@ function PaymentsPage() {
                 value={endDate}
               />
             </div>
-          </div>
 
-          <div
-            className="container text-center d-flex
-          justify-content-center
-          align-items-center
-          "
-            id="no-print"
-          >
-            <button
-              className="btn btn-primary text-light m-1"
-              onClick={loadPaymentForGivenDate}
-              id="no-print"
-            >
-              <b> Get </b>
-            </button>
-
-            <button
-              className="btn btn-success text-light  m-1"
-              onClick={payAllVendors}
-              style={{
-                display: data?.length > 0 ? "inline" : "none",
-              }}
-              id="no-print"
-            >
-              <b> Pay </b>
-            </button>
-
-            <div
-              className="btn btn-warning text-dark border border-2 border-warning text-dark m-2"
-              onClick={() => {
-                exportToPDF();
-              }}
-              style={{
-                display: data?.length > 0 ? "inline" : "none",
-              }}
-              id="no-print"
-            >
-              <b>Download</b>
+            <div className="container d-flex">
+              <button
+                className="btn btn-primary text-light m-1"
+                onClick={loadPaymentForGivenDate}
+                id="no-print"
+              >
+                <b> Get </b>
+              </button>
+              <button
+                className="btn btn-success text-light m-1"
+                onClick={payAllVendors}
+                style={{
+                  display: data?.length > 0 ? "inline" : "none",
+                }}
+                id="no-print"
+              >
+                <b>
+                  <pre>
+                    Pay {(filteredData.length > 0 ? filteredData : data).length}{" "}
+                    {(filteredData.length > 0 ? filteredData : data).length ===
+                    1
+                      ? "vendor"
+                      : "vendors"}
+                  </pre>
+                </b>
+              </button>
+              <button
+                className="btn btn-warning text-dark border border-2 border-warning text-dark m-1"
+                onClick={() => {
+                  exportToPDF();
+                }}
+                style={{
+                  display: data?.length > 0 ? "inline" : "none",
+                }}
+                id="no-print"
+              >
+                <b>Download</b>
+              </button>
             </div>
           </div>
 
@@ -642,8 +553,7 @@ function PaymentsPage() {
               fontSize: "12px",
             }}
           >
-            <table className="table table-sm">
-              <BootstrapTable
+            {/* <BootstrapTable
                 id="payment-table"
                 hover={true}
                 bordered={false}
@@ -655,7 +565,58 @@ function PaymentsPage() {
                 pagination={pagination}
                 rowEvents={rowEvents}
                 filter={filterFactory()}
-              />
+              /> */}
+            <div className="text-dark" style={{ fontSize: "20px" }}>
+              {(filteredData.length > 0 ? filteredData : data).length} vendors
+            </div>
+            <table className="table table-sm table-striped table-hover">
+              <thead>
+                <tr
+                  className="bg-dark text-light"
+                  style={{ fontSize: "14px", fontWeight: "bold" }}
+                >
+                  {(filteredData.length > 0 ? filteredData : data).length === 0
+                    ? ""
+                    : Object?.keys(
+                        filteredData.length > 0 ? filteredData[0] : data[0]
+                      )
+                        ?.filter(
+                          (i) =>
+                            i !== "orders" &&
+                            i !== "is_paid" &&
+                            i !== "created_by"
+                        )
+                        .map((i) => <td> {i} </td>)}
+
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody style={{ fontSize: "12px" }}>
+                {(filteredData.length > 0 ? filteredData : data).legnth === 0
+                  ? ""
+                  : Object?.values(
+                      filteredData.length > 0 ? filteredData : data
+                    )?.map((i) => (
+                      <tr>
+                        <td>{i.vendor_id}</td>
+                        <td>{i.to_be_paid}</td>
+                        <td>{i.order_count}</td>
+                        <td>{i.vendor}</td>
+                        <td>{i.number}</td>
+                        <td>{i.penalized ? "true" : "false"}</td>
+                        <td>{i.fully_refunded ? "true" : "false"}</td>
+                        <td>{i.pay_period}</td>
+                        <td>{i.pay_type}</td>
+                        <td>{i.start_date}</td>
+                        <td>{i.end_date}</td>
+                        <td>
+                          <div className="btn btn-success text-light">
+                            <b>Pay</b>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+              </tbody>
             </table>
           </div>
         </>

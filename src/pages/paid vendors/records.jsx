@@ -74,7 +74,7 @@ function PaidVendorsPage() {
         });
 
         setData(data);
-        // console.log(data);
+        console.log(data);
       })
       .catch((error) => {
         alert(error);

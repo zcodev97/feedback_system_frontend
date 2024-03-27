@@ -12,7 +12,7 @@ function NavBar() {
     setActiveLink(link);
   };
 
-  let navLinkClassName = "nav-link text-dark rounded border";
+  let navLinkClassName = "nav-link text-light";
 
   const [loading, setLoading] = useState(false);
 
@@ -36,13 +36,14 @@ function NavBar() {
   return (
     <>
       <nav
-        className="navbar navbar-expand-sm navbar-dark  text-center rounded p-2"
+        className="navbar navbar-expand-sm bg-dark  navbar-dark  text-center rounded p-2"
         id="no-print"
       >
         <div
           className="container-fluid"
           style={{
             display: "flex",
+            color: "white",
             flexDirection: "row-reverse",
             alignItems: "center",
             justifyContent: "end",
@@ -100,8 +101,11 @@ function NavBar() {
                 </Link>
               </li>
 
-              <li className="nav-item btn m-1 p-2 border border-1 rounded">
-                👤<b> {localStorage.getItem("username")}</b>
+              <li className="nav-item btn m-1 p-2 ">
+                <b className="text-light">
+                  {" "}
+                  {localStorage.getItem("username")}
+                </b>
               </li>
               <li className="nav-item rounded m-1">
                 <Link
