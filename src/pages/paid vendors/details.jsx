@@ -19,7 +19,7 @@ function PaidVendorOrdersPage() {
 
   const pagination = paginationFactory({
     page: 1,
-    sizePerPage: 5,
+    sizePerPage: location.state.row.orders?.length,
     lastPageText: ">>",
     firstPageText: "<<",
     nextPageText: ">",
@@ -29,42 +29,6 @@ function PaidVendorOrdersPage() {
   });
 
   const vendorPaymentsColumns = [
-    // {
-    //   dataField: "cancellation_reason",
-    //   text: "cancellation_reason",
-    //   sort: true,
-    // filter: textFilter(),
-    // },
-    // {
-    //   dataField: "cancellation_type",
-    //   text: "cancellation_type",
-    //   sort: true,
-    // filter: textFilter(),
-    // },
-    // {
-    //   dataField: "commission_percentage",
-    //   text: "commission_percentage",
-    //   sort: true,
-    // filter: textFilter(),
-    // },
-    // {
-    //   dataField: "commission_value",
-    //   text: "commission_value",
-    //   sort: true,
-    // filter: textFilter(),
-    // },
-    // {
-    //   dataField: "hybrid_payment",
-    //   text: "hybrid_payment",
-    //   sort: true,
-    // filter: textFilter(),
-    // },
-    // {
-    //   dataField: "lastStatus",
-    //   text: "lastStatus",
-    //   sort: true,
-    // filter: textFilter(),
-    // },
     {
       dataField: "order_id",
       text: "order_id",
@@ -80,72 +44,42 @@ function PaidVendorOrdersPage() {
     },
 
     {
-      dataField: "refund",
-      text: "refund",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
       dataField: "subtotal",
       text: "subtotal",
       sort: true,
       // filter: textFilter(),
     },
 
-    {
-      dataField: "total_discount",
-      text: "total_discount",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "vendor_discount",
-      text: "vendor_discount ",
-      sort: true,
-      // filter: textFilter(),
-    },
+    // {
+    //   dataField: "total_discount",
+    //   text: "total_discount",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
+    // {
+    //   dataField: "vendor_discount",
+    //   text: "vendor_discount ",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
     // {
     //   dataField: "vendor_discount_cap",
     //   text: "vendor_discount_cap",
     //   sort: true,
     //   filter: textFilter(),
     // },
-    {
-      dataField: "to_be_paid",
-      text: "to_be_paid",
-      sort: true,
-      // filter: textFilter(),
-    },
+    // {
+    //   dataField: "to_be_paid",
+    //   text: "to_be_paid",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
   ];
 
   // console.log(location.state.row.orders);
 
   location.state.row.orders?.map((i) => {
-    i.to_be_paid = i.to_be_paid?.toLocaleString("en-US", {
-      style: "currency",
-      currency: "IQD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
-    i.refund = i.refund?.toLocaleString("en-US", {
-      style: "currency",
-      currency: "IQD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
     i.subtotal = i.subtotal?.toLocaleString("en-US", {
-      style: "currency",
-      currency: "IQD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
-    i.vendor_discount = i.vendor_discount?.toLocaleString("en-US", {
-      style: "currency",
-      currency: "IQD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
-    i.total_discount = i.total_discount?.toLocaleString("en-US", {
       style: "currency",
       currency: "IQD",
       minimumFractionDigits: 0,
@@ -163,6 +97,17 @@ function PaidVendorOrdersPage() {
     <>
       <NavBar />
 
+      <div className="container">
+        <div
+          className="btn"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          Back
+        </div>
+      </div>
+
       <div className="container-fluid" style={{ overflowX: "auto" }}>
         <div
           className="container-fluid text-center"
@@ -170,13 +115,12 @@ function PaidVendorOrdersPage() {
         >
           <div className="container text-center" style={{ fontSize: "20px" }}>
             <p>
-              {" "}
               Paid Orders For Vendor <b> {location.state.row.vendor} </b>{" "}
             </p>
             <hr />
             <p>
-              {location.state.row.date_from} <b>to </b>{" "}
-              {location.state.row.date_to}
+              {location.state.row.start_date} <b>to </b>{" "}
+              {location.state.row.end_date}
             </p>
           </div>
           <hr />

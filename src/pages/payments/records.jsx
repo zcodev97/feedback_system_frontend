@@ -81,7 +81,7 @@ function PaymentsPage() {
         if (response.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
-        response.forEach((i) => {
+        response.results?.forEach((i) => {
           dropdownMenupaymentmethodTemp.push({
             label: i.title,
             value: i.id,
@@ -112,7 +112,7 @@ function PaymentsPage() {
     })
       .then((response) => response.json())
       .then((response) => {
-        response.forEach((i) => {
+        response.results?.forEach((i) => {
           dropdownMenupaymentcyclesTemp.push({
             label: i.title,
             value: i.id,
@@ -143,7 +143,7 @@ function PaymentsPage() {
     })
       .then((response) => response.json())
       .then((response) => {
-        response.forEach((i) => {
+        response.results?.forEach((i) => {
           // console.log(i);
           dropdownMenuVendorsTemp.push({
             label: i.name,
@@ -176,7 +176,7 @@ function PaymentsPage() {
         });
 
         const responseData = await response.json();
-        console.log(responseData);
+
         if (response.ok) {
           console.log("Data saved successfully");
         } else {
@@ -215,6 +215,8 @@ function PaymentsPage() {
     )
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
+
         if (data.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
@@ -233,7 +235,7 @@ function PaymentsPage() {
             i.created_by = localStorage.getItem("user_id");
             i.is_paid = true;
           });
-          console.log(data);
+
           setData(data);
           setFilteredData(data);
         } else {
@@ -398,9 +400,75 @@ function PaymentsPage() {
       {loading ? (
         <Loading />
       ) : (
-        <>
-          <div className="container text-center" id="no-print">
-            <h1 className="text-danger "> Payments</h1>
+        <div>
+          <div className="container text-start mt-2 mb-2" id="no-print">
+            <b className="text-danger" style={{ fontSize: "24px" }}>
+              Payments
+            </b>
+          </div>
+
+          <div
+            className="container d-flex justify-content-center align-items-end mt-2 mb-2"
+            style={{ width: "300px" }}
+            id="no-print"
+          >
+            <div className="container">
+              Start Date
+              <DateTimePicker
+                key={1}
+                clearIcon={null}
+                format={"y-MM-dd"}
+                onChange={setStartDate}
+                value={startDate}
+              />
+            </div>
+
+            <div className="container">
+              End Date
+              <DateTimePicker
+                key={1}
+                clearIcon={null}
+                format={"y-MM-dd"}
+                onChange={setEndDate}
+                value={endDate}
+              />
+            </div>
+
+            <div className="container d-flex" id="no-print">
+              <button
+                className="btn btn-primary text-light m-1"
+                onClick={loadPaymentForGivenDate}
+              >
+                <b> Get </b>
+              </button>
+              <div
+                onClick={payAllVendors}
+                style={{
+                  display: data?.length > 0 ? "inline" : "none",
+                }}
+              >
+                <pre className="btn btn-success text-light m-1">
+                  <b>
+                    Pay {(filteredData.length > 0 ? filteredData : data).length}
+                    {(filteredData.length > 0 ? filteredData : data).length ===
+                    1
+                      ? " vendor"
+                      : " vendors"}
+                  </b>
+                </pre>
+              </div>
+              <button
+                className="btn btn-warning text-dark border border-2 border-warning text-dark m-1"
+                onClick={() => {
+                  exportToPDF();
+                }}
+                style={{
+                  display: data?.length > 0 ? "inline" : "none",
+                }}
+              >
+                <b>Download</b>
+              </button>
+            </div>
           </div>
 
           <div className="container-fluid d-flex mt-2 mb-2">
@@ -478,73 +546,6 @@ function PaymentsPage() {
           </div>
 
           <div
-            className="container d-flex justify-content-center align-items-end mt-2 mb-2"
-            style={{ width: "300px" }}
-            id="no-print"
-          >
-            <div className="container">
-              Start Date
-              <DateTimePicker
-                key={1}
-                clearIcon={null}
-                format={"y-MM-dd"}
-                onChange={setStartDate}
-                value={startDate}
-              />
-            </div>
-
-            <div className="container">
-              End Date
-              <DateTimePicker
-                key={1}
-                clearIcon={null}
-                format={"y-MM-dd"}
-                onChange={setEndDate}
-                value={endDate}
-              />
-            </div>
-
-            <div className="container d-flex">
-              <button
-                className="btn btn-primary text-light m-1"
-                onClick={loadPaymentForGivenDate}
-                id="no-print"
-              >
-                <b> Get </b>
-              </button>
-              <div
-                onClick={payAllVendors}
-                style={{
-                  display: data?.length > 0 ? "inline" : "none",
-                }}
-                id="no-print"
-              >
-                <pre className="btn btn-success text-light m-1">
-                  <b>
-                    Pay {(filteredData.length > 0 ? filteredData : data).length}{" "}
-                    {(filteredData.length > 0 ? filteredData : data).length ===
-                    1
-                      ? "vendor"
-                      : "vendors"}
-                  </b>
-                </pre>
-              </div>
-              <button
-                className="btn btn-warning text-dark border border-2 border-warning text-dark m-1"
-                onClick={() => {
-                  exportToPDF();
-                }}
-                style={{
-                  display: data?.length > 0 ? "inline" : "none",
-                }}
-                id="no-print"
-              >
-                <b>Download</b>
-              </button>
-            </div>
-          </div>
-
-          <div
             className="container-fluid text-center"
             style={{
               overflowX: "auto",
@@ -552,21 +553,13 @@ function PaymentsPage() {
               fontSize: "12px",
             }}
           >
-            {/* <BootstrapTable
-                id="payment-table"
-                hover={true}
-                bordered={false}
-                bootstrap4
-                striped={true}
-                keyField="id"
-                columns={vendorPaymentsColumns}
-                data={filteredData.length > 0 ? filteredData : data}
-                pagination={pagination}
-                rowEvents={rowEvents}
-                filter={filterFactory()}
-              /> */}
-            <div className="text-dark" style={{ fontSize: "20px" }}>
-              {(filteredData.length > 0 ? filteredData : data).length} vendors
+            <div
+              className="text-dark text-start mt -2 mb-2"
+              style={{ fontSize: "20px" }}
+            >
+              <b>
+                {(filteredData.length > 0 ? filteredData : data).length} Vendors
+              </b>
             </div>
             <table className="table table-sm table-striped table-hover">
               <thead>
@@ -574,20 +567,17 @@ function PaymentsPage() {
                   className="bg-dark text-light"
                   style={{ fontSize: "14px", fontWeight: "bold" }}
                 >
-                  {(filteredData.length > 0 ? filteredData : data).length === 0
-                    ? ""
-                    : Object?.keys(
-                        filteredData.length > 0 ? filteredData[0] : data[0]
-                      )
-                        ?.filter(
-                          (i) =>
-                            i !== "orders" &&
-                            i !== "is_paid" &&
-                            i !== "created_by"
-                        )
-                        .map((i) => <td> {i} </td>)}
-
-                  <td></td>
+                  <td>Vendor ID</td>
+                  <td>To Be Paid</td>
+                  <td>Order Count</td>
+                  <td>Vendor</td>
+                  <td>Number</td>
+                  <td>Penalized </td>
+                  <td>Fully Refunded</td>
+                  <td>Pay Period</td>
+                  <td>Pay Type</td>
+                  <td>Start Date</td>
+                  <td>End Date</td>
                 </tr>
               </thead>
               <tbody style={{ fontSize: "12px" }}>
@@ -608,17 +598,12 @@ function PaymentsPage() {
                         <td>{i.pay_type}</td>
                         <td>{i.start_date}</td>
                         <td>{i.end_date}</td>
-                        <td>
-                          <div className="btn btn-success text-light">
-                            <b>Pay</b>
-                          </div>
-                        </td>
                       </tr>
                     ))}
               </tbody>
             </table>
           </div>
-        </>
+        </div>
       )}
     </>
   );
