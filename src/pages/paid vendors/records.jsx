@@ -24,7 +24,7 @@ const PaidVendorsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState([]);
   const [paginatedData, setPaginatedData] = useState([]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
 
   function loadPayments(page = 1) {
     setLoading(true);
@@ -54,6 +54,7 @@ const PaidVendorsPage = () => {
 
         setData(data);
         setPaginatedData(data.results);
+        console.log(data.results);
       })
       .catch((error) => {
         alert(error);
