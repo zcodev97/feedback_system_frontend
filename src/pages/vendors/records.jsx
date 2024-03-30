@@ -64,13 +64,13 @@ function VendorsPage() {
         // console.log(data);
 
         // console.log(data[0]);
-        data?.map((i) => {
+        data.results?.map((i) => {
           i.created_at = formatDate(new Date(i.created_at));
           i.pay_period = i.pay_period.title;
           i.pay_type = i.pay_type.title;
         });
 
-        setData(data);
+        setData(data.results);
       })
       .catch((error) => {
         alert(error);

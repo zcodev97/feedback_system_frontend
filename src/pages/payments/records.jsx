@@ -131,39 +131,11 @@ function PaymentsPage() {
   const [selectedVendor, setSelectedVendor] = useState({});
   const [vendorsDropDownMenu, setVendorsDropDownMenu] = useState([]);
   let dropdownMenuVendorsTemp = [];
-  async function loadVendors() {
-    setLoading(true);
-
-    fetch(SYSTEM_URL + "vendors/", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        response.results?.forEach((i) => {
-          // console.log(i);
-          dropdownMenuVendorsTemp.push({
-            label: i.name,
-            value: i.vendor_id,
-          });
-        });
-        setVendorsDropDownMenu(dropdownMenuVendorsTemp);
-      })
-      .catch((e) => {
-        alert(e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
 
   async function payAllVendors() {
     setLoading(true);
 
-    // console.log(data);
+    console.log(filteredData);
     if (filteredData.length !== 0) {
       try {
         const response = await fetch(SYSTEM_URL + "create_payment/", {
@@ -215,12 +187,11 @@ function PaymentsPage() {
     )
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-
-        if (data.code === "token_not_valid") {
-          navigate("/login", { replace: true });
-        }
         // console.log(data);
+
+        // if (data.code === "token_not_valid") {
+        //   navigate("/login", { replace: true });
+        // }
 
         data = data.filter((i) => i.orders.length > 0);
         if (data.length > 0) {
@@ -234,7 +205,14 @@ function PaymentsPage() {
             i.is_paid = i.is_paid ? true : false;
             i.created_by = localStorage.getItem("user_id");
             i.is_paid = true;
+
+            dropdownMenuVendorsTemp.push({
+              label: i.vendor,
+              value: i.vendor_id,
+            });
           });
+
+          setVendorsDropDownMenu(dropdownMenuVendorsTemp);
 
           setData(data);
           setFilteredData(data);
@@ -250,86 +228,10 @@ function PaymentsPage() {
       });
   }
 
-  const vendorPaymentsColumns = [
-    {
-      dataField: "is_paid",
-      text: "is_paid",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "order_count",
-      text: "order_count",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "to_be_paid",
-      text: "to_be_paid",
-      sort: true,
-      // filter: textFilter(),
-    },
-
-    {
-      dataField: "penalized",
-      text: "penalized",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "fully_refunded",
-      text: "fully_refunded",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "number",
-      text: "number",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "pay_period",
-      text: "pay_period",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "pay_type",
-      text: "pay_type",
-      sort: true,
-      // filter: textFilter(),
-    },
-
-    {
-      dataField: "end_date",
-      text: "end_date ",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "start_date",
-      text: "start_date",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "vendor",
-      text: "vendor",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "vendor_id",
-      text: "vendor_id",
-      sort: true,
-      // filter: textFilter(),
-    },
-  ];
   useEffect(() => {
     loadPaymentsMethod();
     loadPaymentsCycle();
-    loadVendors();
+    // loadVendors();
 
     if (location?.state?.data.length > 0) {
       setData(location?.state?.data);
@@ -568,9 +470,9 @@ function PaymentsPage() {
                   style={{ fontSize: "14px", fontWeight: "bold" }}
                 >
                   <td>Vendor ID</td>
+                  <td>Vendor</td>
                   <td>To Be Paid</td>
                   <td>Order Count</td>
-                  <td>Vendor</td>
                   <td>Number</td>
                   <td>Penalized </td>
                   <td>Fully Refunded</td>
@@ -588,9 +490,9 @@ function PaymentsPage() {
                     )?.map((i) => (
                       <tr>
                         <td>{i.vendor_id}</td>
+                        <td>{i.vendor}</td>
                         <td>{i.to_be_paid}</td>
                         <td>{i.order_count}</td>
-                        <td>{i.vendor}</td>
                         <td>{i.number}</td>
                         <td>{i.penalized ? "true" : "false"}</td>
                         <td>{i.fully_refunded ? "true" : "false"}</td>

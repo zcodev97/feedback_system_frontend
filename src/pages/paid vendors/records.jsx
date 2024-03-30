@@ -54,7 +54,6 @@ const PaidVendorsPage = () => {
 
         setData(data);
         setPaginatedData(data.results);
-        console.log(data.results);
       })
       .catch((error) => {
         alert(error);
@@ -98,7 +97,7 @@ const PaidVendorsPage = () => {
           </div>
 
           <div className="container-fluid " style={{ overflowX: "auto" }}>
-            <table className="table table-striped table-sm ">
+            <table className="table table-striped table-sm table-hover">
               <thead>
                 <tr>
                   <th>Vendor ID</th>
@@ -111,16 +110,22 @@ const PaidVendorsPage = () => {
                   <th>To Be Paid</th>
                   <th>Order Count</th>
                   <th>Created At</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedData
                   .map(({ orders, created_by, id, is_paid, ...rest }) => rest)
                   .map((item) => (
-                    <tr key={item.vendor_id * Math.random()}>
+                    <tr key={item.vendor_id + Math.random() * 10}>
                       {Object.values(item).map((i) => {
                         return <td>{i}</td>;
                       })}
+                      <td>
+                        <button className="btn btn-light text-success">
+                          <b>edit</b>
+                        </button>
+                      </td>
                     </tr>
                   ))}
               </tbody>

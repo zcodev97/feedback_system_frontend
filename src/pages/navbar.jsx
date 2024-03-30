@@ -76,7 +76,7 @@ function NavBar() {
                   to="/vendors"
                   style={{ fontSize: "20px", color: "red" }}
                 >
-                  <i class="fi fi-rs-bells"></i>
+                  <i className="fi fi-rs-bells"></i>
                 </Link>
               </li>
               <li className="nav-item rounded m-1">
