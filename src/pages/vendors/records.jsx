@@ -14,7 +14,10 @@ function VendorsPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState([]);
+  const [paginatedData, setPaginatedData] = useState([]);
+  const itemsPerPage = 15;
 
   const [totalDinar, setTotalDinar] = useState(0);
   const [totalDollar, setTotalDollar] = useState(0);
@@ -25,34 +28,34 @@ function VendorsPage() {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
 
-    const formData = new FormData();
-    formData.append("file", file);
+  //   const formData = new FormData();
+  //   formData.append("file", file);
 
-    try {
-      const response = await axios.post(
-        SYSTEM_URL + "upload_vendors_as_excel/",
+  //   try {
+  //     const response = await axios.post(
+  //       SYSTEM_URL + "upload_vendors_as_excel/",
 
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
 
-      // console.log(response.data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  };
+  //     // console.log(response.data);
+  //   } catch (error) {
+  //     console.error("Error uploading file:", error);
+  //   }
+  // };
 
-  async function loadData() {
+  async function loadData(page = 1) {
     setLoading(true);
-    await fetch(SYSTEM_URL + "vendors/", {
+    await fetch(SYSTEM_URL + `vendors/?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -61,16 +64,14 @@ function VendorsPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
-
-        // console.log(data[0]);
         data.results?.map((i) => {
-          i.created_at = formatDate(new Date(i.created_at));
           i.pay_period = i.pay_period.title;
           i.pay_type = i.pay_type.title;
+          i.fully_refunded = i.fully_refunded ? "yes" : "no";
+          i.penalized = i.penalized ? "yes" : "no";
         });
-
-        setData(data.results);
+        setData(data);
+        setPaginatedData(data.results);
       })
       .catch((error) => {
         alert(error);
@@ -79,10 +80,24 @@ function VendorsPage() {
         setLoading(false);
       });
   }
-
   useEffect(() => {
+    setLoading(true);
     loadData();
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+
+    setLoading(false);
   }, []);
+
+  const totalPages = Math.ceil(data.count / itemsPerPage);
+
+  const changePage = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      loadData(page);
+
+      setCurrentPage(page);
+    }
+  };
 
   const columns = [
     {
@@ -167,17 +182,6 @@ function VendorsPage() {
     },
   };
 
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    lastPageText: ">>",
-    firstPageText: "<<",
-    nextPageText: ">",
-    prePageText: "<",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-  });
-
   return (
     <>
       <NavBar />
@@ -188,11 +192,14 @@ function VendorsPage() {
           className="container-fluid"
           style={{ margin: "0px", padding: "0px" }}
         >
-          <div className="container text-center ">
-            <h1> Vendors</h1>
+          <div
+            className="container text-start mt-2 mb-2"
+            style={{ fontSize: "34px" }}
+          >
+            <b> Vendors</b>
           </div>
 
-          <div className="container mt-2 mb-2 text-center d-flex">
+          {/* <div className="container mt-2 mb-2 text-center d-flex">
             <form onSubmit={handleSubmit}>
               <input
                 type="file"
@@ -207,7 +214,7 @@ function VendorsPage() {
             >
               Upload
             </button>
-          </div>
+          </div> */}
 
           <div
             className="container-fluid text-center"
@@ -217,19 +224,61 @@ function VendorsPage() {
               fontSize: "14px",
             }}
           >
-            <table className="table table-sm">
-              <BootstrapTable
-                className="text-center"
-                hover={true}
-                bordered={false}
-                keyField="id"
-                columns={columns}
-                data={data}
-                pagination={pagination}
-                filter={filterFactory()}
-                // rowEvents={rowEvents}
-              />
-            </table>
+            <div className="container-fluid " style={{ overflowX: "auto" }}>
+              <table className="table table-striped table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th>Vendor ID</th>
+                    <th>Name</th>
+                    <th>Pay Period </th>
+                    <th>Pay Type</th>
+                    <th>Number </th>
+                    <th>Owner Name</th>
+                    <th>Owner Phone</th>
+                    <th>Fully Refended</th>
+                    <th>Penalized</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedData.map((item) => (
+                    <tr key={item.vendor_id + Math.random() * 10}>
+                      {Object.values(item).map((i) => {
+                        return <td>{i}</td>;
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div>
+                <button
+                  className="btn btn-primary m-1"
+                  onClick={() => changePage(1)}
+                >
+                  &laquo; First
+                </button>
+                <button
+                  className="btn btn-primary m-1"
+                  onClick={() => changePage(currentPage - 1)}
+                >
+                  &lsaquo; Prev
+                </button>
+                <span>
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  className="btn btn-primary m-1"
+                  onClick={() => changePage(currentPage + 1)}
+                >
+                  Next &rsaquo;
+                </button>
+                <button
+                  className="btn btn-primary m-1"
+                  onClick={() => changePage(totalPages)}
+                >
+                  Last &raquo;
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

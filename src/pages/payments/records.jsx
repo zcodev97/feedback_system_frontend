@@ -373,6 +373,9 @@ function PaymentsPage() {
               </button>
               <button
                 className="btn btn-success m-1"
+                style={{
+                  display: data?.length > 0 ? "inline" : "none",
+                }}
                 onClick={() => {
                   JSONToExcel(
                     filteredData.length > 0 ? filteredData : data,

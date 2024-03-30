@@ -92,12 +92,12 @@ function NavBar() {
               </li>
               <li className="nav-item rounded m-1">
                 <Link className={navLinkClassName} to="/payments">
-                  <h5>Payments</h5>
+                  <h5>Create Payment</h5>
                 </Link>
               </li>
               <li className="nav-item rounded m-1">
                 <Link className={navLinkClassName} to="/paid_vendors">
-                  <h5>Paid Vendors</h5>
+                  <h5>Payments</h5>
                 </Link>
               </li>
 

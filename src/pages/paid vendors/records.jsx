@@ -110,7 +110,7 @@ const PaidVendorsPage = () => {
                   <th>To Be Paid</th>
                   <th>Order Count</th>
                   <th>Created At</th>
-                  <th></th>
+                  {/* <th></th> */}
                 </tr>
               </thead>
               <tbody>
@@ -121,11 +121,11 @@ const PaidVendorsPage = () => {
                       {Object.values(item).map((i) => {
                         return <td>{i}</td>;
                       })}
-                      <td>
+                      {/* <td>
                         <button className="btn btn-light text-success">
                           <b>edit</b>
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
               </tbody>
