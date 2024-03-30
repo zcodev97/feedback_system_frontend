@@ -99,76 +99,6 @@ function VendorsPage() {
     }
   };
 
-  const columns = [
-    {
-      dataField: "account_manager",
-      text: "account_manager",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "created_at",
-      text: "created_at",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "penalized",
-      text: "penalized",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "fully_refunded",
-      text: "fully_refunded",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "owner_phone",
-      text: "owner_phone",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "owner_name",
-      text: "owner_name",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "number",
-      text: "number",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "pay_type",
-      text: "pay_type",
-      sort: true,
-      filter: textFilter(),
-    },
-
-    {
-      dataField: "pay_period",
-      text: "pay_period",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "name",
-      text: "name",
-      sort: true,
-      filter: textFilter(),
-    },
-    {
-      dataField: "vendor_id",
-      text: "vendor_id",
-      sort: true,
-      filter: textFilter(),
-    },
-  ];
-
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
       navigate("/container_details", {
@@ -226,6 +156,11 @@ function VendorsPage() {
           >
             <div className="container-fluid " style={{ overflowX: "auto" }}>
               <table className="table table-striped table-sm table-hover">
+                <tfoot className="mt-3 ">
+                  <p style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    {data.count} Vendors
+                  </p>
+                </tfoot>
                 <thead>
                   <tr>
                     <th>Vendor ID</th>
