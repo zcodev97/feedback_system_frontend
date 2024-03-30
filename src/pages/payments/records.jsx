@@ -14,6 +14,8 @@ import DateTimePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
+import * as XLSX from "xlsx";
+
 function PaymentsPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,6 +39,13 @@ function PaymentsPage() {
     window.addEventListener("afterprint", () => {
       document.title = originalTitle;
     });
+  };
+
+  //convert json to excel
+  const JSONToExcel = (jsonData, fileName) => {
+    const worksheet = XLSX.utils.json_to_sheet(jsonData);
+    const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
 
   const pagination = paginationFactory({
@@ -231,7 +240,6 @@ function PaymentsPage() {
   useEffect(() => {
     loadPaymentsMethod();
     loadPaymentsCycle();
-    // loadVendors();
 
     if (location?.state?.data.length > 0) {
       setData(location?.state?.data);
@@ -310,7 +318,7 @@ function PaymentsPage() {
           </div>
 
           <div
-            className="container d-flex justify-content-center align-items-end mt-2 mb-2"
+            className="container-fluid d-flex justify-content-center align-items-end mt-2 mb-2"
             style={{ width: "300px" }}
             id="no-print"
           >
@@ -336,31 +344,24 @@ function PaymentsPage() {
               />
             </div>
 
-            <div className="container d-flex" id="no-print">
+            <div className="container-fluid d-flex" id="no-print">
               <button
-                className="btn btn-primary text-light m-1"
+                className="btn btn-primary m-1"
                 onClick={loadPaymentForGivenDate}
               >
                 <b> Get </b>
               </button>
-              <div
+              <button
+                className="btn btn-warning m-1"
                 onClick={payAllVendors}
                 style={{
                   display: data?.length > 0 ? "inline" : "none",
                 }}
               >
-                <pre className="btn btn-success text-light m-1">
-                  <b>
-                    Pay {(filteredData.length > 0 ? filteredData : data).length}
-                    {(filteredData.length > 0 ? filteredData : data).length ===
-                    1
-                      ? " vendor"
-                      : " vendors"}
-                  </b>
-                </pre>
-              </div>
+                <b> Pay </b>
+              </button>
               <button
-                className="btn btn-warning text-dark border border-2 border-warning text-dark m-1"
+                className="btn btn-danger m-1"
                 onClick={() => {
                   exportToPDF();
                 }}
@@ -368,7 +369,20 @@ function PaymentsPage() {
                   display: data?.length > 0 ? "inline" : "none",
                 }}
               >
-                <b>Download</b>
+                <b> Print </b>
+              </button>
+              <button
+                className="btn btn-success m-1"
+                onClick={() => {
+                  JSONToExcel(
+                    filteredData.length > 0 ? filteredData : data,
+                    `payments ${formatDate(startDate)} to ${formatDate(
+                      endDate
+                    )}`
+                  );
+                }}
+              >
+                <b> Export Excel</b>
               </button>
             </div>
           </div>
