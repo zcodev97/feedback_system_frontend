@@ -395,7 +395,7 @@ function PaymentsPage() {
 
           <div
             className=" d-flex justify-content-start align-items-end mt-2 mb-2"
-            style={{ width: "300px" }}
+            style={{ width: "500px" }}
             id="no-print"
           >
             <div className="container">
@@ -422,7 +422,7 @@ function PaymentsPage() {
 
             <div className="container-fluid d-flex" id="no-print">
               <button
-                className="btn btn-primary m-1"
+                className="btn btn-light m-1"
                 onClick={loadPaymentForGivenDate}
               >
                 <b> Get </b>
@@ -448,7 +448,7 @@ function PaymentsPage() {
                   display: data?.length > 0 ? "inline" : "none",
                 }}
               >
-                <b> Pay </b>
+                <b> Pay All </b>
               </button>
               {/* <button
                 className="btn btn-danger m-1"
