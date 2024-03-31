@@ -79,7 +79,7 @@ function NavBar() {
                   <i className="fi fi-rs-bells"></i>
                 </Link>
               </li>
-              <li className="nav-item rounded m-1">
+              {/* <li className="nav-item rounded m-1">
                 <Link
                   onClick={() => handleLinkClick("vendors")}
                   className={`${navLinkClassName} ${
@@ -89,7 +89,7 @@ function NavBar() {
                 >
                   <h5>Vendors</h5>
                 </Link>
-              </li>
+              </li> */}
               <li className="nav-item rounded m-1">
                 <Link className={navLinkClassName} to="/payments">
                   <h5>Create Payment</h5>
@@ -101,21 +101,23 @@ function NavBar() {
                 </Link>
               </li>
 
-              <li className="nav-item btn m-1 p-2 ">
-                <b className="text-light">
-                  {" "}
-                  {localStorage.getItem("username")}
-                </b>
-              </li>
-              <li className="nav-item rounded m-1">
-                <Link
-                  className="nav-link text-light bg-danger rounded p-2 border border-3 border-danger"
-                  to="/login"
-                  onClick={handleLogout}
-                >
-                  <b>Sign Out</b>
-                </Link>
-              </li>
+              <ul className="navbar-nav">
+                <li className="nav-item btn m-1 p-2 ">
+                  <b className="text-light">
+                    {" "}
+                    {localStorage.getItem("username")}
+                  </b>
+                </li>
+                <li className="nav-item rounded m-1">
+                  <Link
+                    className="nav-link text-light bg-danger rounded p-2 border border-3 border-danger"
+                    to="/login"
+                    onClick={handleLogout}
+                  >
+                    <b>Sign Out</b>
+                  </Link>
+                </li>
+              </ul>
             </ul>
           </div>
         </div>

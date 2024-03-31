@@ -64,6 +64,9 @@ function VendorsPage() {
     })
       .then((response) => response.json())
       .then((data) => {
+        if (data.code === "token_not_valid") {
+          navigate("/login", { replace: true });
+        }
         data.results?.map((i) => {
           i.pay_period = i.pay_period.title;
           i.pay_type = i.pay_type.title;

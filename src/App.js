@@ -23,7 +23,7 @@ function App() {
                 localStorage.getItem("token") === undefined ? (
                   <LoginPage />
                 ) : (
-                  <VendorsPage />
+                  <PaymentsPage />
                 )
               }
             />

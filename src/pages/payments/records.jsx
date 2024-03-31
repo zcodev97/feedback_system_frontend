@@ -22,6 +22,8 @@ function PaymentsPage() {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [totalToBePaid, setTotalTobePaid] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
 
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Filtered data for the table
@@ -48,29 +50,18 @@ function PaymentsPage() {
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
   };
 
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: data?.length,
-    lastPageText: ">>",
-    firstPageText: "<<",
-    nextPageText: ">",
-    prePageText: "<",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-  });
-
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      navigate("/payment_details", {
-        state: {
-          row: row,
-          data: data,
-          startDate: startDate,
-          endDate: endDate,
-        },
-      });
-    },
-  };
+  // const rowEvents = {
+  //   onClick: (e, row, rowIndex) => {
+  //     navigate("/payment_details", {
+  //       state: {
+  //         row: row,
+  //         data: data,
+  //         startDate: startDate,
+  //         endDate: endDate,
+  //       },
+  //     });
+  //   },
+  // };
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState({});
   const [paymentMethodDropDown, setpaymentMethodDropDown] = useState([]);
@@ -141,7 +132,7 @@ function PaymentsPage() {
   const [vendorsDropDownMenu, setVendorsDropDownMenu] = useState([]);
   let dropdownMenuVendorsTemp = [];
 
-  async function payAllVendors() {
+  async function payVendors() {
     setLoading(true);
 
     console.log(filteredData);
@@ -196,24 +187,37 @@ function PaymentsPage() {
     )
       .then((response) => response.json())
       .then((data) => {
-        // console.log(data);
-
-        // if (data.code === "token_not_valid") {
-        //   navigate("/login", { replace: true });
-        // }
+        if (data.code === "token_not_valid") {
+          navigate("/login", { replace: true });
+        }
 
         data = data.filter((i) => i.orders.length > 0);
         if (data.length > 0) {
+          setTotalTobePaid(
+            data.reduce(
+              (accumulator, currentObject) =>
+                accumulator + parseFloat(currentObject.to_be_paid),
+              0
+            )
+          );
+          setTotalOrders(
+            data.reduce(
+              (accumulator, currentObject) =>
+                accumulator + parseFloat(currentObject.order_count),
+              0
+            )
+          );
+
           data.map((i) => {
-            i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
-              style: "currency",
-              currency: "IQD",
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            });
+            // i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
+            //   style: "currency",
+            //   currency: "IQD",
+            //   minimumFractionDigits: 0,
+            //   maximumFractionDigits: 2,
+            // });
+            i.to_be_paid = parseFloat(i.to_be_paid);
             i.is_paid = i.is_paid ? true : false;
             i.created_by = localStorage.getItem("user_id");
-            i.is_paid = true;
 
             dropdownMenuVendorsTemp.push({
               label: i.vendor,
@@ -255,6 +259,22 @@ function PaymentsPage() {
 
     filtered = filtered.filter((item) => item.vendor_id === opt.value);
 
+    setTotalTobePaid(
+      filtered.reduce(
+        (accumulator, currentObject) =>
+          accumulator + parseFloat(currentObject.to_be_paid),
+        0
+      )
+    );
+
+    setTotalOrders(
+      filtered.reduce(
+        (accumulator, currentObject) =>
+          accumulator + parseFloat(currentObject.order_count),
+        0
+      )
+    );
+
     setFilteredData(filtered);
     setLoading(false);
   }
@@ -268,12 +288,42 @@ function PaymentsPage() {
           item.pay_type === opt.label &&
           item.pay_period === selectedPaymentCycle.label
       );
+      setTotalTobePaid(
+        filtered.reduce(
+          (accumulator, currentObject) =>
+            accumulator + currentObject.to_be_paid,
+          0
+        )
+      );
+
+      setTotalOrders(
+        filtered.reduce(
+          (accumulator, currentObject) =>
+            accumulator + parseFloat(currentObject.order_count),
+          0
+        )
+      );
       setFilteredData(filtered);
       setLoading(false);
       return;
     }
 
     filtered = filtered.filter((item) => item.pay_type === opt.label);
+
+    setTotalTobePaid(
+      filtered.reduce(
+        (accumulator, currentObject) => accumulator + currentObject.to_be_paid,
+        0
+      )
+    );
+
+    setTotalOrders(
+      filtered.reduce(
+        (accumulator, currentObject) =>
+          accumulator + parseFloat(currentObject.order_count),
+        0
+      )
+    );
 
     setFilteredData(filtered);
     setLoading(false);
@@ -292,13 +342,39 @@ function PaymentsPage() {
           item.pay_period === opt.label &&
           item.pay_type === selectedPaymentMethod.label
       );
+      setTotalTobePaid(
+        filtered.reduce(
+          (accumulator, currentObject) =>
+            accumulator + currentObject.to_be_paid,
+          0
+        )
+      );
+      setTotalOrders(
+        filtered.reduce(
+          (accumulator, currentObject) =>
+            accumulator + parseFloat(currentObject.order_count),
+          0
+        )
+      );
       setFilteredData(filtered);
       setLoading(false);
       return;
     }
 
     filtered = filtered.filter((item) => item.pay_period === opt.label);
-
+    setTotalTobePaid(
+      filtered.reduce(
+        (accumulator, currentObject) => accumulator + currentObject.to_be_paid,
+        0
+      )
+    );
+    setTotalOrders(
+      filtered.reduce(
+        (accumulator, currentObject) =>
+          accumulator + parseFloat(currentObject.order_count),
+        0
+      )
+    );
     setFilteredData(filtered);
     setLoading(false);
   }
@@ -318,7 +394,7 @@ function PaymentsPage() {
           </div>
 
           <div
-            className="container-fluid d-flex justify-content-center align-items-end mt-2 mb-2"
+            className=" d-flex justify-content-start align-items-end mt-2 mb-2"
             style={{ width: "300px" }}
             id="no-print"
           >
@@ -353,14 +429,28 @@ function PaymentsPage() {
               </button>
               <button
                 className="btn btn-warning m-1"
-                onClick={payAllVendors}
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Are You Sure to Pay ${
+                        filteredData.length > 0
+                          ? filteredData.length
+                          : data.length
+                      } Vendors, Please Note that all orders for these vendors will marked as paid`
+                    )
+                  ) {
+                    payVendors();
+                  } else {
+                    alert("You Cancelled the Operation");
+                  }
+                }}
                 style={{
                   display: data?.length > 0 ? "inline" : "none",
                 }}
               >
                 <b> Pay </b>
               </button>
-              <button
+              {/* <button
                 className="btn btn-danger m-1"
                 onClick={() => {
                   exportToPDF();
@@ -370,7 +460,7 @@ function PaymentsPage() {
                 }}
               >
                 <b> Print </b>
-              </button>
+              </button> */}
               <button
                 className="btn btn-success m-1"
                 style={{
@@ -455,6 +545,20 @@ function PaymentsPage() {
                   setSelectedPaymentCycle("");
                   setSelectedVendor("");
                   setSelectedPaymentMethod("");
+                  setTotalTobePaid(
+                    data.reduce(
+                      (accumulator, currentObject) =>
+                        accumulator + currentObject.to_be_paid,
+                      0
+                    )
+                  );
+                  setTotalOrders(
+                    data.reduce(
+                      (accumulator, currentObject) =>
+                        accumulator + parseFloat(currentObject.order_count),
+                      0
+                    )
+                  );
                   setLoading(false);
                 }}
                 id="no-print"
@@ -476,9 +580,27 @@ function PaymentsPage() {
               className="text-dark text-start mt -2 mb-2"
               style={{ fontSize: "20px" }}
             >
-              <b>
-                {(filteredData.length > 0 ? filteredData : data).length} Vendors
-              </b>
+              <div>
+                <b>
+                  {(filteredData.length > 0 ? filteredData : data).length}{" "}
+                  Vendors
+                </b>
+              </div>
+
+              <div>
+                Total To Be Paid{" "}
+                <b>
+                  {totalToBePaid.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "IQD",
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}
+                </b>
+              </div>
+              <div>
+                Total Orders <b>{totalOrders}</b>
+              </div>
             </div>
             <table className="table table-sm table-striped table-hover">
               <thead>
@@ -497,6 +619,7 @@ function PaymentsPage() {
                   <td>Pay Type</td>
                   <td>Start Date</td>
                   <td>End Date</td>
+                  <td></td>
                 </tr>
               </thead>
               <tbody style={{ fontSize: "12px" }}>
@@ -517,6 +640,23 @@ function PaymentsPage() {
                         <td>{i.pay_type}</td>
                         <td>{i.start_date}</td>
                         <td>{i.end_date}</td>
+                        {/* <td> */}
+                        {/* <button className="btn btn-info" 
+                          onClick={()=>{
+                            navigate("/payment_details", {
+                              state: {
+                                row: row,
+                                data: data,
+                                startDate: startDate,
+                                endDate: endDate,
+                              },
+                            });
+                          }}
+                          >Details</button>
+                        </td> */}
+                        <td>
+                          <button className="btn btn-warning">Pay</button>
+                        </td>
                       </tr>
                     ))}
               </tbody>

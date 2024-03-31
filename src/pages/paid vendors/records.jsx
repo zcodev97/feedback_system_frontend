@@ -37,6 +37,10 @@ const PaidVendorsPage = () => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data.code);
+        if (data.code === "token_not_valid") {
+          navigate("/login", { replace: true });
+        }
         data?.results.map((i) => {
           i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
             style: "currency",
