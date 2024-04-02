@@ -24,6 +24,7 @@ function PaymentsPage() {
   const [endDate, setEndDate] = useState(new Date());
   const [totalToBePaid, setTotalTobePaid] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [totalVendors, setTotalVendors] = useState(0);
 
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Filtered data for the table
@@ -135,34 +136,63 @@ function PaymentsPage() {
   async function payVendors() {
     setLoading(true);
 
-    console.log(filteredData);
-    if (filteredData.length !== 0) {
-      try {
-        const response = await fetch(SYSTEM_URL + "create_payment/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(filteredData),
-        });
+    // console.log(filteredData);
 
-        const responseData = await response.json();
+    try {
+      const response = await fetch(SYSTEM_URL + "create_payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(filteredData.length !== 0 ? filteredData : data),
+      });
 
-        if (response.ok) {
-          console.log("Data saved successfully");
-        } else {
-          console.error("Failed to save data:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error sending data:", error);
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Data saved successfully");
+      } else {
+        console.error("Failed to save data:", response.statusText);
       }
-
-      setLoading(false);
-
-      navigate("/paid_vendors", { replace: true });
+    } catch (error) {
+      console.error("Error sending data:", error);
     }
+
     setLoading(false);
+
+    navigate("/paid_vendors", { replace: true });
+  }
+
+  async function paySingleVendor(data) {
+    setLoading(true);
+
+    // console.log(filteredData);
+
+    try {
+      const response = await fetch(SYSTEM_URL + "create_payment/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify([data]),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log("Data saved successfully");
+      } else {
+        console.error("Failed to save data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error sending data:", error);
+    }
+
+    setLoading(false);
+
+    // navigate("/paid_vendors", { replace: true });
   }
 
   async function loadPaymentForGivenDate() {
@@ -208,6 +238,8 @@ function PaymentsPage() {
             )
           );
 
+          setTotalVendors(data.length);
+
           data.map((i) => {
             // i.to_be_paid = i.to_be_paid.toLocaleString("en-US", {
             //   style: "currency",
@@ -246,9 +278,25 @@ function PaymentsPage() {
     loadPaymentsCycle();
 
     if (location?.state?.data.length > 0) {
+      setLoading(true);
       setData(location?.state?.data);
       setStartDate(location?.state?.start_date);
       setEndDate(location?.state?.end_date);
+      setTotalTobePaid(
+        location?.state?.data.reduce(
+          (accumulator, currentObject) =>
+            accumulator + parseFloat(currentObject.to_be_paid),
+          0
+        )
+      );
+      setTotalOrders(
+        location?.state?.data.reduce(
+          (accumulator, currentObject) =>
+            accumulator + parseFloat(currentObject.order_count),
+          0
+        )
+      );
+      setLoading(false);
     }
   }, []);
 
@@ -274,6 +322,8 @@ function PaymentsPage() {
         0
       )
     );
+
+    setTotalVendors(filtered.length);
 
     setFilteredData(filtered);
     setLoading(false);
@@ -304,6 +354,7 @@ function PaymentsPage() {
         )
       );
       setFilteredData(filtered);
+      setTotalVendors(filtered.length);
       setLoading(false);
       return;
     }
@@ -326,6 +377,7 @@ function PaymentsPage() {
     );
 
     setFilteredData(filtered);
+    setTotalVendors(filtered.length);
     setLoading(false);
   }
 
@@ -357,6 +409,7 @@ function PaymentsPage() {
         )
       );
       setFilteredData(filtered);
+      setTotalVendors(filtered.length);
       setLoading(false);
       return;
     }
@@ -376,6 +429,7 @@ function PaymentsPage() {
       )
     );
     setFilteredData(filtered);
+    setTotalVendors(filtered.length);
     setLoading(false);
   }
 
@@ -422,60 +476,10 @@ function PaymentsPage() {
 
             <div className="container-fluid d-flex" id="no-print">
               <button
-                className="btn btn-light m-1"
+                className="btn btn-primary m-1"
                 onClick={loadPaymentForGivenDate}
               >
                 <b> Get </b>
-              </button>
-              <button
-                className="btn btn-warning m-1"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      `Are You Sure to Pay ${
-                        filteredData.length > 0
-                          ? filteredData.length
-                          : data.length
-                      } Vendors, Please Note that all orders for these vendors will marked as paid`
-                    )
-                  ) {
-                    payVendors();
-                  } else {
-                    alert("You Cancelled the Operation");
-                  }
-                }}
-                style={{
-                  display: data?.length > 0 ? "inline" : "none",
-                }}
-              >
-                <b> Pay All </b>
-              </button>
-              {/* <button
-                className="btn btn-danger m-1"
-                onClick={() => {
-                  exportToPDF();
-                }}
-                style={{
-                  display: data?.length > 0 ? "inline" : "none",
-                }}
-              >
-                <b> Print </b>
-              </button> */}
-              <button
-                className="btn btn-success m-1"
-                style={{
-                  display: data?.length > 0 ? "inline" : "none",
-                }}
-                onClick={() => {
-                  JSONToExcel(
-                    filteredData.length > 0 ? filteredData : data,
-                    `payments ${formatDate(startDate)} to ${formatDate(
-                      endDate
-                    )}`
-                  );
-                }}
-              >
-                <b> Export Excel</b>
               </button>
             </div>
           </div>
@@ -559,6 +563,7 @@ function PaymentsPage() {
                       0
                     )
                   );
+                  setTotalVendors(data.length);
                   setLoading(false);
                 }}
                 id="no-print"
@@ -577,29 +582,71 @@ function PaymentsPage() {
             }}
           >
             <div
-              className="text-dark text-start mt -2 mb-2"
+              className="container-fluid d-flex justfiy-content-between align-items-center text-dark text-start mt -2 mb-2"
               style={{ fontSize: "20px" }}
             >
-              <div>
-                <b>
-                  {(filteredData.length > 0 ? filteredData : data).length}{" "}
-                  Vendors
-                </b>
+              <div className="container">
+                <div>
+                  <b>{totalVendors} Vendors</b>
+                </div>
+
+                <div>
+                  Total To Be Paid{" "}
+                  <b>
+                    {totalToBePaid.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "IQD",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}
+                  </b>
+                </div>
+                <div>
+                  Total Orders <b>{totalOrders}</b>
+                </div>
               </div>
 
-              <div>
-                Total To Be Paid{" "}
-                <b>
-                  {totalToBePaid.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "IQD",
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })}
-                </b>
-              </div>
-              <div>
-                Total Orders <b>{totalOrders}</b>
+              <div className="container text-end">
+                <button
+                  className="btn btn-warning m-1"
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        `Are You Sure to Pay ${
+                          filteredData.length > 0
+                            ? filteredData.length
+                            : data.length
+                        } Vendors, Please Note that all orders for these vendors will marked as paid`
+                      )
+                    ) {
+                      payVendors();
+                    } else {
+                      alert("You Cancelled the Operation");
+                    }
+                  }}
+                  style={{
+                    display: data?.length > 0 ? "inline" : "none",
+                  }}
+                >
+                  <b> Pay All </b>
+                </button>
+
+                <button
+                  className="btn btn-success m-1"
+                  style={{
+                    display: data?.length > 0 ? "inline" : "none",
+                  }}
+                  onClick={() => {
+                    JSONToExcel(
+                      filteredData.length > 0 ? filteredData : data,
+                      `payments ${formatDate(startDate)} to ${formatDate(
+                        endDate
+                      )}`
+                    );
+                  }}
+                >
+                  <b> Export Excel</b>
+                </button>
               </div>
             </div>
             <table className="table table-sm table-striped table-hover">
@@ -622,16 +669,23 @@ function PaymentsPage() {
                   <td></td>
                 </tr>
               </thead>
-              <tbody style={{ fontSize: "12px" }}>
+              <tbody style={{ fontSize: "14px" }}>
                 {(filteredData.length > 0 ? filteredData : data).legnth === 0
                   ? ""
                   : Object?.values(
                       filteredData.length > 0 ? filteredData : data
-                    )?.map((i) => (
+                    )?.map((i, rowIndex) => (
                       <tr>
                         <td>{i.vendor_id}</td>
                         <td>{i.vendor}</td>
-                        <td>{i.to_be_paid}</td>
+                        <td>
+                          {i.to_be_paid.toLocaleString("en-US", {
+                            style: "currency",
+                            currency: "IQD",
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          })}
+                        </td>
                         <td>{i.order_count}</td>
                         <td>{i.number}</td>
                         <td>{i.penalized ? "true" : "false"}</td>
@@ -640,22 +694,98 @@ function PaymentsPage() {
                         <td>{i.pay_type}</td>
                         <td>{i.start_date}</td>
                         <td>{i.end_date}</td>
-                        {/* <td> */}
-                        {/* <button className="btn btn-info" 
-                          onClick={()=>{
-                            navigate("/payment_details", {
-                              state: {
-                                row: row,
-                                data: data,
-                                startDate: startDate,
-                                endDate: endDate,
-                              },
-                            });
-                          }}
-                          >Details</button>
-                        </td> */}
                         <td>
-                          <button className="btn btn-warning">Pay</button>
+                          <button
+                            className="btn btn-info"
+                            onClick={() => {
+                              navigate("/payment_details", {
+                                state: {
+                                  row: i,
+                                  data:
+                                    filteredData.length > 0
+                                      ? filteredData
+                                      : data,
+                                  startDate: startDate,
+                                  endDate: endDate,
+                                },
+                              });
+                            }}
+                          >
+                            Details
+                          </button>
+                        </td>
+                        <td>
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => {
+                              if (
+                                window.confirm(
+                                  `Are You Sure to Pay ${i.vendor} Vendor, Please Note that all orders for this vendor will marked as paid`
+                                )
+                              ) {
+                                if (filteredData.length > 0) {
+                                  filteredData.splice(rowIndex, 1);
+                                  setFilteredData(
+                                    filteredData.filter(
+                                      (item, index) => index !== rowIndex
+                                    )
+                                  );
+
+                                  setTotalTobePaid(
+                                    filteredData.reduce(
+                                      (accumulator, currentObject) =>
+                                        accumulator + currentObject.to_be_paid,
+                                      0
+                                    )
+                                  );
+                                  setTotalOrders(
+                                    filteredData.reduce(
+                                      (accumulator, currentObject) =>
+                                        accumulator +
+                                        parseFloat(currentObject.order_count),
+                                      0
+                                    )
+                                  );
+
+                                  // Filter out the deleted object
+                                } else {
+                                  console.log(data.length);
+
+                                  data.splice(rowIndex, 1);
+                                  console.log(data.length);
+                                  setData(
+                                    data.filter(
+                                      (item, index) => index !== rowIndex
+                                    )
+                                  );
+
+                                  setTotalTobePaid(
+                                    data.reduce(
+                                      (accumulator, currentObject) =>
+                                        accumulator + currentObject.to_be_paid,
+                                      0
+                                    )
+                                  );
+                                  setTotalOrders(
+                                    data.reduce(
+                                      (accumulator, currentObject) =>
+                                        accumulator +
+                                        parseFloat(currentObject.order_count),
+                                      0
+                                    )
+                                  );
+
+                                  // Filter out the deleted object
+                                }
+
+                                paySingleVendor(i);
+                              } else {
+                                alert("You Cancelled the Operation");
+                              }
+                            }}
+                          >
+                            <b> Pay</b>
+                          </button>
                         </td>
                       </tr>
                     ))}

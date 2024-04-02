@@ -80,42 +80,42 @@ function PaymentDetialsPage() {
     //   filter: textFilter(),
     // },
     {
-      dataField: "order_date",
-      text: "order_date",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
       dataField: "order_id",
       text: "order_id",
       sort: true,
-      // filter: textFilter(),
+      filter: textFilter(),
     },
-
+    {
+      dataField: "subtotal",
+      text: "subtotal",
+      sort: true,
+      filter: textFilter(),
+    },
+    {
+      dataField: "order_date",
+      text: "order_date",
+      sort: true,
+      filter: textFilter(),
+    },
     // {
     //   dataField: "refund",
     //   text: "refund",
     //   sort: true,
     //   filter: textFilter(),
     // },
+
     // {
-    //   dataField: "subtotal",
-    //   text: "subtotal",
+    //   dataField: "to_be_paid",
+    //   text: "to_be_paid",
     //   sort: true,
-    //   filter: textFilter(),
+    //   // filter: textFilter(),
     // },
-    {
-      dataField: "to_be_paid",
-      text: "to_be_paid",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "total_discount",
-      text: "total_discount",
-      sort: true,
-      // filter: textFilter(),
-    },
+    // {
+    //   dataField: "total_discount",
+    //   text: "total_discount",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
     // {
     //   dataField: "vendor",
     //   text: "vendor",
@@ -123,33 +123,33 @@ function PaymentDetialsPage() {
     //   // filter: textFilter(),
     // },
 
-    {
-      dataField: "vendor_discount",
-      text: "vendor_discount ",
-      sort: true,
-      // filter: textFilter(),
-    },
-    {
-      dataField: "vendor_discount_cap",
-      text: "vendor_discount_cap",
-      sort: true,
-      // filter: textFilter(),
-    },
+    // {
+    //   dataField: "vendor_discount",
+    //   text: "vendor_discount ",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
+    // {
+    //   dataField: "vendor_discount_cap",
+    //   text: "vendor_discount_cap",
+    //   sort: true,
+    //   // filter: textFilter(),
+    // },
   ];
 
   location.state.row.orders?.map((i) => {
-    i.to_be_paid = i.to_be_paid?.toLocaleString("en-US", {
-      style: "currency",
-      currency: "IQD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
-    i.refund = i.refund?.toLocaleString("en-US", {
-      style: "currency",
-      currency: "IQD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    });
+    // i.to_be_paid = i.to_be_paid?.toLocaleString("en-US", {
+    //   style: "currency",
+    //   currency: "IQD",
+    //   minimumFractionDigits: 0,
+    //   maximumFractionDigits: 2,
+    // });
+    // i.refund = i.refund?.toLocaleString("en-US", {
+    //   style: "currency",
+    //   currency: "IQD",
+    //   minimumFractionDigits: 0,
+    //   maximumFractionDigits: 2,
+    // });
     i.subtotal = i.subtotal?.toLocaleString("en-US", {
       style: "currency",
       currency: "IQD",
@@ -170,7 +170,7 @@ function PaymentDetialsPage() {
 
       <div className="container-fluid">
         <button
-          className="btn btn-danger"
+          className="btn btn-danger m-2"
           onClick={() => {
             navigate("/payments", {
               replace: true,
@@ -186,7 +186,7 @@ function PaymentDetialsPage() {
           back
         </button>
 
-        <div
+        {/* <div
           className="btn btn-warning text-dark border border-2 border-warning text-dark m-2"
           onClick={() => {
             exportToPDF();
@@ -194,13 +194,13 @@ function PaymentDetialsPage() {
           id="no-print"
         >
           <b>Download</b>
-        </div>
+        </div> */}
       </div>
 
       <div className="container-fluid d-flex mt-2 mb-2">
         <div className="container text-center d-flex">
           <p style={{ fontSize: "20px", fontWeight: "bold" }}>
-            {location.state.row.orders[0].vendor}
+            {location.state.row.vendor}
           </p>
         </div>
 
@@ -211,7 +211,7 @@ function PaymentDetialsPage() {
         </div>
         <div className="container text-center">
           <p style={{ fontSize: "20px", fontWeight: "bold" }}>
-            {location.state.row.orders[0].vendor_id}
+            {location.state.row.vendor_id}
           </p>
         </div>
       </div>
@@ -222,7 +222,7 @@ function PaymentDetialsPage() {
           style={{
             overflowX: "auto",
             width: "100%",
-            fontSize: "12px",
+            fontSize: "16px",
           }}
         >
           <BootstrapTable

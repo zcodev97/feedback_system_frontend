@@ -106,25 +106,42 @@ const PaidVendorsPage = () => {
                 <tr>
                   <th>Vendor ID</th>
                   <th>Vendor</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Pay Period </th>
-                  <th>Pay Type</th>
-                  <th>Number </th>
                   <th>To Be Paid</th>
                   <th>Order Count</th>
-                  <th>Created At</th>
+                  <th>Number </th>
+                  <th>Pay Period </th>
+                  <th>Pay Type</th>
+
+                  <th>Start Date</th>
+                  <th>End Date</th>
                   {/* <th></th> */}
                 </tr>
               </thead>
               <tbody>
                 {paginatedData
                   .map(({ orders, created_by, id, is_paid, ...rest }) => rest)
-                  .map((item) => (
-                    <tr key={item.vendor_id + Math.random() * 10}>
-                      {Object.values(item).map((i) => {
+                  .map((i) => (
+                    <tr key={i.vendor_id + Math.random() * 10}>
+                      <td>{i.vendor_id}</td>
+                      <td>{i.vendor}</td>
+                      <td>
+                        {Number(i.to_be_paid).toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "IQD",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        })}
+                      </td>
+                      <td>{i.order_count}</td>
+                      <td>{i.number}</td>
+
+                      <td>{i.pay_period}</td>
+                      <td>{i.pay_type}</td>
+                      <td>{i.start_date}</td>
+                      <td>{i.end_date}</td>
+                      {/* {Object.values(item).map((i) => {
                         return <td>{i}</td>;
-                      })}
+                      })} */}
                       {/* <td>
                         <button className="btn btn-light text-success">
                           <b>edit</b>
