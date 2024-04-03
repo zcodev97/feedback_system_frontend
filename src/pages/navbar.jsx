@@ -68,56 +68,36 @@ function NavBar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item rounded m-1">
-                <Link
-                  onClick={() => handleLinkClick("vendors")}
-                  className={`${navLinkClassName} ${
-                    activeLink === "vendors" ? "active-link" : ""
-                  }`}
-                  to="/vendors"
-                  style={{ fontSize: "20px", color: "red" }}
-                >
-                  <i className="fi fi-rs-bells"></i>
-                </Link>
-              </li>
-              {/* <li className="nav-item rounded m-1">
-                <Link
-                  onClick={() => handleLinkClick("vendors")}
-                  className={`${navLinkClassName} ${
-                    activeLink === "vendors" ? "active-link" : ""
-                  }`}
-                  to="/vendors"
-                >
-                  <h5>Vendors</h5>
-                </Link>
-              </li> */}
-              <li className="nav-item rounded m-1">
-                <Link className={navLinkClassName} to="/payments">
-                  <h5>Create Payment</h5>
+                <Link className={navLinkClassName} to="/create_feedback">
+                  <h5>انشاء</h5>
                 </Link>
               </li>
               <li className="nav-item rounded m-1">
-                <Link className={navLinkClassName} to="/paid_vendors">
-                  <h5>Payments</h5>
+                <Link className={navLinkClassName} to="/feedbacks">
+                  <h5>الادخالات</h5>
+                </Link>
+              </li>
+              <li className="nav-item rounded m-1">
+                <Link className={navLinkClassName} to="/feedback_report">
+                  <h5>تقارير</h5>
                 </Link>
               </li>
 
-              <ul className="navbar-nav">
-                <li className="nav-item btn m-1 p-2 ">
-                  <b className="text-light">
-                    {" "}
-                    {localStorage.getItem("username")}
-                  </b>
-                </li>
-                <li className="nav-item rounded m-1">
-                  <Link
-                    className="nav-link text-light bg-danger rounded p-2 border border-3 border-danger"
-                    to="/login"
-                    onClick={handleLogout}
-                  >
-                    <b>Sign Out</b>
-                  </Link>
-                </li>
-              </ul>
+              <li className="nav-item btn m-1 p-2 ">
+                <b className="text-light">
+                  {" "}
+                  {localStorage.getItem("username")}
+                </b>
+              </li>
+              <li className="nav-item rounded m-1">
+                <Link
+                  className="nav-link text-light bg-danger rounded p-2 border border-3 border-danger"
+                  to="/login"
+                  onClick={handleLogout}
+                >
+                  <b>خروج</b>
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

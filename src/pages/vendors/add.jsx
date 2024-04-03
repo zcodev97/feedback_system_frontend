@@ -2,25 +2,27 @@ import { useState } from "react";
 import NavBar from "../navbar";
 import { useNavigate } from "react-router-dom";
 import { SYSTEM_URL } from "../../global";
+import logo from "../../sultani_logo.jpg";
+import { useLocation } from "react-router-dom";
 
-function AddContainerPage() {
+function AddFeedBackPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
   const [containerName, setContainerName] = useState("");
-  const [totalDinar, setTotalDinar] = useState(0);
-  const [totalDollar, setTotalDollar] = useState(0);
+  const [welcomeLevel, setWelcomeLevel] = useState("");
+  const [serviceLevel, setServiceLevel] = useState("");
+  const [priceLevel, setPriceLevel] = useState("");
+  const [foodLevel, setFoodLevel] = useState("");
+  const [cleanLevel, setCleanLevel] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [notes, setNotes] = useState("");
 
-  function addContainer() {
-    // if (window.confirm("هل انت متاكد ؟") == true) {
-
-    // } else {
-    //   alert("لقد الغيت عملية الأضافة");
-    // }
-
+  function addFeedBack() {
     setLoading(true);
 
-    fetch(SYSTEM_URL + "containers/", {
+    fetch(SYSTEM_URL + "create_feedback/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,9 +30,13 @@ function AddContainerPage() {
       },
 
       body: JSON.stringify({
-        name: containerName,
-        total_dinar: 0,
-        total_dollar: 0,
+        welcome: welcomeLevel,
+        service_level: serviceLevel,
+        price_level: priceLevel,
+        food_level: foodLevel,
+        clean_level: cleanLevel,
+        client_name: clientName,
+        notes: 0,
         created_by: localStorage.getItem("user_id"),
       }),
     })
@@ -41,8 +47,8 @@ function AddContainerPage() {
         return {};
       })
       .then((data) => {
-        alert("تم اضافة سجل ");
-        navigate("/containers", { replace: true });
+        window.location.reload();
+        // navigate("/create_feedback", { replace: true });
       })
       .catch((error) => {
         console.log(error);
@@ -53,103 +59,535 @@ function AddContainerPage() {
       });
   }
 
+  const WelcomeRadiohandleChange = (e) => {
+    const { name, value } = e.target;
+    setWelcomeLevel(value);
+  };
+  const ServiceLevelRadiohandleChange = (e) => {
+    const { name, value } = e.target;
+    setServiceLevel(value);
+  };
+  const PriceLevelRadiohandleChange = (e) => {
+    const { name, value } = e.target;
+    setPriceLevel(value);
+  };
+  const FoodLevelRadiohandleChange = (e) => {
+    const { name, value } = e.target;
+    setFoodLevel(value);
+  };
+  const CleanLevelRadiohandleChange = (e) => {
+    const { name, value } = e.target;
+    setCleanLevel(value);
+  };
+
   return (
     <>
       <NavBar />
 
       <div className="container-fluid text-center">
-        <table className="table table-bordered table-striped table-hover">
-          <thead>
-            <tr>
-              <td className="text-light bg-dark">
-                <h3>الادخال</h3>
-              </td>
-              <td className="text-light bg-dark">
-                <h3>العنوان</h3>
-              </td>
-            </tr>
-          </thead>
+        <div className="container-fluid">
+          <img src={logo} width={200} alt="" />
 
-          <tbody>
-            {/*  */}
-            <tr>
-              <td>
-                <input
-                  onChange={(e) => {
-                    setContainerName(e.target.value);
-                  }}
-                  type="text"
-                  className="form-control text-center border border-dark"
-                  id="username"
-                  style={{ fontSize: "20px" }}
-                />
-              </td>
-              <td>
-                <b> آسم القاصة</b>
-              </td>
-            </tr>
-            {/*  */}
-            {/*  */}
-            {/* <tr>
-              <td>
-                <input
-                  onChange={(e) => {
-                    setTotalDinar(e.target.value);
-                  }}
-                  type="number"
-                  className="form-control text-center border border-dark"
-                  id="username"
-                  style={{ fontSize: "20px" }}
-                />
-              </td>
-              <td>
-                <b> مبلغ الدينار</b>
-              </td>
-            </tr> */}
-            {/*  */}
-            {/* <tr>
-              <td>
-                <input
-                  onChange={(e) => {
-                    setTotalDollar(e.target.value);
-                  }}
-                  type="number"
-                  className="form-control text-center border border-dark"
-                  id="username"
-                  style={{ fontSize: "20px" }}
-                />
-              </td>
-              <td>
-                <b> مبلغ الدولار</b>
-              </td>
-            </tr> */}
-            {/*  */}
-          </tbody>
-        </table>
-        <div className="row">
-          <div className="col-md-6">
-            <div
-              className="btn btn-danger p-2 mt-2 mb-2"
-              onClick={() => {
-                navigate(-1);
-              }}
-            >
-              <h4> رجوع 🔙</h4>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div
-              className="btn btn-success p-2 mt-2 mb-2"
-              onClick={() => {
-                if (containerName.length === 0) {
-                  alert("أسم القاصة !");
-                  return;
-                }
-                addContainer();
-              }}
-            >
-              <h4> حفظ القيد</h4>
-            </div>
+          <table
+            id="table-with-background"
+            className="table table-bordered table-striped table-hover"
+          >
+            <tbody>
+              {/*  */}
+              <tr>
+                <td>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="welcome"
+                        id="welcome"
+                        value="weak"
+                        onChange={WelcomeRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ضعيف
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="welcome"
+                        id="welcome"
+                        value="good"
+                        onChange={WelcomeRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        مقبول
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="welcome"
+                        id="welcome"
+                        value="very good"
+                        onChange={WelcomeRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        جيد
+                      </label>
+                    </div>
+                    <div className="p-2"></div>
+
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="welcome"
+                        id="welcome"
+                        value="excellent"
+                        onChange={WelcomeRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ممتاز
+                      </label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <b> الاستقبال والترحيب</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="service_level"
+                        id="service_level"
+                        value="weak"
+                        onChange={ServiceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ضعيف
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="service_level"
+                        id="service_level"
+                        value="good"
+                        onChange={ServiceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        مقبول
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="service_level"
+                        id="service_level"
+                        value="very good"
+                        onChange={ServiceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        جيد
+                      </label>
+                    </div>
+                    <div className="p-2"></div>
+
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="service_level"
+                        id="service_level"
+                        value="excellent"
+                        onChange={ServiceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ممتاز
+                      </label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <b> مستوى الخدمه</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="prive_level"
+                        id="prive_level"
+                        value="weak"
+                        onChange={PriceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ضعيف
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="prive_level"
+                        id="prive_level"
+                        value="good"
+                        onChange={PriceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        مقبول
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="prive_level"
+                        id="prive_level"
+                        value="very good"
+                        onChange={PriceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        جيد
+                      </label>
+                    </div>
+                    <div className="p-2"></div>
+
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="prive_level"
+                        id="prive_level"
+                        value="excellent"
+                        onChange={PriceLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ممتاز
+                      </label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <b> مستوى الاسعار</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="food_level"
+                        id="food_level"
+                        value="weak"
+                        onChange={FoodLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ضعيف
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="food_level"
+                        id="food_level"
+                        value="good"
+                        onChange={FoodLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        مقبول
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="food_level"
+                        id="food_level"
+                        value="very good"
+                        onChange={FoodLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        جيد
+                      </label>
+                    </div>
+                    <div className="p-2"></div>
+
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="food_level"
+                        id="food_level"
+                        value="excellent"
+                        onChange={FoodLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ممتاز
+                      </label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <b> جودة الطعام </b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="clean_level"
+                        id="clean_level"
+                        value="weak"
+                        onChange={CleanLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ضعيف
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="clean_level"
+                        id="clean_level"
+                        value="good"
+                        onChange={CleanLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        مقبول
+                      </label>
+                    </div>
+
+                    <div className="p-2"></div>
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="clean_level"
+                        id="clean_level"
+                        value="very good"
+                        onChange={CleanLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        جيد
+                      </label>
+                    </div>
+                    <div className="p-2"></div>
+
+                    <div>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="clean_level"
+                        id="clean_level"
+                        value="excellent"
+                        onChange={CleanLevelRadiohandleChange}
+                      />
+
+                      <br />
+                      <label
+                        className="form-check-label"
+                        htmlFor="flexCheckDefault"
+                      >
+                        ممتاز
+                      </label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <b> مستوى النظافة</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <textarea
+                    name=""
+                    id=""
+                    cols="60"
+                    rows="5"
+                    dir="rtl"
+                    className="p-2"
+                    style={{ border: "none" }}
+                    onChange={(e) => {
+                      setNotes(e.target.value);
+                    }}
+                  ></textarea>
+                </td>
+                <td>
+                  <b> ملاحظات</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input
+                    onChange={(e) => {
+                      setClientName(e.target.value);
+                    }}
+                    type="text"
+                    className="form-control text-center border border-dark"
+                    id="username"
+                    style={{ fontSize: "20px" }}
+                  />
+                </td>
+                <td>
+                  <b> اسم الزبون</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            className="btn btn-success p-2 mt-2 mb-2"
+            onClick={() => {
+              if (
+                welcomeLevel === "" ||
+                serviceLevel === "" ||
+                priceLevel === "" ||
+                foodLevel === "" ||
+                cleanLevel === ""
+              ) {
+                alert("الرجاء ادخال الاستبيان");
+                return;
+              }
+              addFeedBack();
+            }}
+          >
+            <h4> اضافة </h4>
           </div>
         </div>
       </div>
@@ -157,4 +595,4 @@ function AddContainerPage() {
   );
 }
 
-export default AddContainerPage;
+export default AddFeedBackPage;

@@ -2,7 +2,7 @@ import { useState, React, useEffect } from "react";
 import Loading from "./loading";
 import { useNavigate } from "react-router-dom";
 import { SYSTEM_URL } from "../global";
-
+import logo from "../sultani_logo.jpg";
 function Login() {
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ function Login() {
         localStorage.setItem("user_id", data.user.id);
         localStorage.setItem("email", data.user.email);
         localStorage.setItem("is_superuser", data.user.is_superuser);
-        navigate("/payments", { replace: true });
+        navigate("/create_feedback", { replace: true });
         checkUserLoggedIn = true;
       })
       .catch((error) => {
@@ -53,48 +53,6 @@ function Login() {
       .finally(() => {
         setLoading(false);
       });
-
-    if (checkUserLoggedIn) {
-      if (localStorage.getItem("user_type") === "supervisor") {
-        await fetch(
-          SYSTEM_URL + "company_supervisor/" + localStorage.getItem("user_id"),
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        )
-          .then((response) => {
-            // console.log(response.status);
-            if (response.status === 401) {
-              alert("username or password is incorrect");
-              return;
-            }
-            if (response.status === 200) {
-              return response.json();
-            }
-          })
-          .then((data) => {
-            if (data.detail) {
-              // console.log(data);
-
-              alert(data.detail);
-              return;
-            }
-
-            navigate("/vendors", { replace: true });
-          })
-          .catch((error) => {
-            console.log(error);
-            alert(error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    }
   }
 
   const handleUsername = (event) => {
@@ -127,17 +85,15 @@ function Login() {
             }}
           >
             <div
-              className="container-fluid p-4 bg-light  text-center text-dark"
+              className="container-fluid p-1 text-center text-dark"
               style={{
                 borderRadius: "50px",
                 height: "500px",
                 width: window.innerWidth / 1.2,
               }}
             >
-              <div className="container text-primary  pt-4 pb-4 mb-4 rounded-circle">
-                <h2>
-                  <b> Baly Payment System </b>
-                </h2>
+              <div className="container text-primary  pt-4 pb-1 rounded-circle">
+                <img src={logo} width={250} alt="" srcset="" />
               </div>
               <div className="row d-flex justify-content-center align-items-center p-4 m-1">
                 <div className="col-md-6 m-1">

@@ -1,16 +1,12 @@
-import BootstrapTable from "react-bootstrap-table-next";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.css";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import "react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { SYSTEM_URL, formatDate } from "../../global";
 import Loading from "../loading";
 import NavBar from "../navbar";
-import axios from "axios";
 
-function VendorsPage() {
+function FeedbackRecordsPage() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -19,43 +15,9 @@ function VendorsPage() {
   const [paginatedData, setPaginatedData] = useState([]);
   const itemsPerPage = 15;
 
-  const [totalDinar, setTotalDinar] = useState(0);
-  const [totalDollar, setTotalDollar] = useState(0);
-
-  const [file, setFile] = useState(null);
-
-  const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-
-  //   const formData = new FormData();
-  //   formData.append("file", file);
-
-  //   try {
-  //     const response = await axios.post(
-  //       SYSTEM_URL + "upload_vendors_as_excel/",
-
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     // console.log(response.data);
-  //   } catch (error) {
-  //     console.error("Error uploading file:", error);
-  //   }
-  // };
-
   async function loadData(page = 1) {
     setLoading(true);
-    await fetch(SYSTEM_URL + `vendors/?page=${page}`, {
+    await fetch(SYSTEM_URL + `feedbacks/?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -67,12 +29,7 @@ function VendorsPage() {
         if (data.code === "token_not_valid") {
           navigate("/login", { replace: true });
         }
-        data.results?.map((i) => {
-          i.pay_period = i.pay_period.title;
-          i.pay_type = i.pay_type.title;
-          i.fully_refunded = i.fully_refunded ? "yes" : "no";
-          i.penalized = i.penalized ? "yes" : "no";
-        });
+
         setData(data);
         setPaginatedData(data.results);
       })
@@ -102,19 +59,6 @@ function VendorsPage() {
     }
   };
 
-  const rowEvents = {
-    onClick: (e, row, rowIndex) => {
-      navigate("/container_details", {
-        state: {
-          id: row.id,
-          name: row.name,
-          total_dinar: row.total_dinar,
-          total_dollar: row.total_dollar,
-        },
-      });
-    },
-  };
-
   return (
     <>
       <NavBar />
@@ -126,29 +70,12 @@ function VendorsPage() {
           style={{ margin: "0px", padding: "0px" }}
         >
           <div
-            className="container text-start mt-2 mb-2"
+            className="container-fluid text-end mt-2 mb-2"
             style={{ fontSize: "34px" }}
           >
-            <b> Vendors</b>
+            <b> الادخالات</b>
           </div>
-
-          {/* <div className="container mt-2 mb-2 text-center d-flex">
-            <form onSubmit={handleSubmit}>
-              <input
-                type="file"
-                className="form-control"
-                onChange={handleFileChange}
-              />
-            </form>
-            <button
-              className="btn btn-light rounded"
-              type="submit"
-              onClick={handleSubmit}
-            >
-              Upload
-            </button>
-          </div> */}
-
+          <hr />
           <div
             className="container-fluid text-center"
             style={{
@@ -161,28 +88,78 @@ function VendorsPage() {
               <table className="table table-striped table-sm table-hover">
                 <tfoot className="mt-3 ">
                   <p style={{ fontSize: "16px", fontWeight: "bold" }}>
-                    {data.count} Vendors
+                    {data.count} العدد الكلي
                   </p>
                 </tfoot>
                 <thead>
                   <tr>
-                    <th>Vendor ID</th>
-                    <th>Name</th>
-                    <th>Pay Period </th>
-                    <th>Pay Type</th>
-                    <th>Number </th>
-                    <th>Owner Name</th>
-                    <th>Owner Phone</th>
-                    <th>Fully Refended</th>
-                    <th>Penalized</th>
+                    <th> تاريخ الانشاء</th>
+                    <th> اسم الزبون</th>
+                    <th> ملاحظات</th>
+                    <th>مستوى النظافة</th>
+                    {/* <th>ملاحظات </th> */}
+                    <th>جودة الطعام</th>
+                    {/* <th>ملاحظات </th> */}
+                    <th>مستوى الاسعار</th>
+                    {/* <th>ملاحظات</th> */}
+                    <th>مستوى الخدمة</th>
+                    {/* <th>ملاحظات</th> */}
+                    <th> الاستقبال والترحيب </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedData.map((item) => (
-                    <tr key={item.vendor_id + Math.random() * 10}>
-                      {Object.values(item).map((i) => {
-                        return <td>{i}</td>;
-                      })}
+                  {paginatedData.map((i) => (
+                    <tr key={Math.random() * 10}>
+                      <td>{formatDate(i.created_at)}</td>
+                      <td>{i.client_name}</td>
+                      <td>{i.notes}</td>
+                      <td>
+                        {i.clean_level === "excellent"
+                          ? "ممتاز"
+                          : i.clean_level === "very good"
+                          ? "جيد"
+                          : i.clean_level === "good"
+                          ? "مقبول"
+                          : "ضعيف"}
+                      </td>
+
+                      <td>
+                        {i.food_level === "excellent"
+                          ? "ممتاز"
+                          : i.food_level === "very good"
+                          ? "جيد"
+                          : i.food_level === "good"
+                          ? "مقبول"
+                          : "ضعيف"}
+                      </td>
+                      <td>
+                        {i.price_level === "excellent"
+                          ? "ممتاز"
+                          : i.price_level === "very good"
+                          ? "جيد"
+                          : i.price_level === "good"
+                          ? "مقبول"
+                          : "ضعيف"}
+                      </td>
+
+                      <td>
+                        {i.service_level === "excellent"
+                          ? "ممتاز"
+                          : i.service_level === "very good"
+                          ? "جيد"
+                          : i.service_level === "good"
+                          ? "مقبول"
+                          : "ضعيف"}
+                      </td>
+                      <td>
+                        {i.welcome === "excellent"
+                          ? "ممتاز"
+                          : i.welcome === "very good"
+                          ? "جيد"
+                          : i.welcome === "good"
+                          ? "مقبول"
+                          : "ضعيف"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -192,13 +169,13 @@ function VendorsPage() {
                   className="btn btn-primary m-1"
                   onClick={() => changePage(1)}
                 >
-                  &laquo; First
+                  &laquo; اول صفحة
                 </button>
                 <button
                   className="btn btn-primary m-1"
                   onClick={() => changePage(currentPage - 1)}
                 >
-                  &lsaquo; Prev
+                  &lsaquo; السابق
                 </button>
                 <span>
                   Page {currentPage} of {totalPages}
@@ -207,13 +184,13 @@ function VendorsPage() {
                   className="btn btn-primary m-1"
                   onClick={() => changePage(currentPage + 1)}
                 >
-                  Next &rsaquo;
+                  التالي &rsaquo;
                 </button>
                 <button
                   className="btn btn-primary m-1"
                   onClick={() => changePage(totalPages)}
                 >
-                  Last &raquo;
+                  اخر صفحة &raquo;
                 </button>
               </div>
             </div>
@@ -224,4 +201,4 @@ function VendorsPage() {
   );
 }
 
-export default VendorsPage;
+export default FeedbackRecordsPage;
