@@ -694,7 +694,7 @@ function PaymentsPage() {
                         <td>{i.pay_type}</td>
                         <td>{i.start_date}</td>
                         <td>{i.end_date}</td>
-                        <td>
+                        {/* <td>
                           <button
                             className="btn btn-info"
                             onClick={() => {
@@ -713,7 +713,7 @@ function PaymentsPage() {
                           >
                             Details
                           </button>
-                        </td>
+                        </td> */}
                         <td>
                           <button
                             className="btn btn-warning"
