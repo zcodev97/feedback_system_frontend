@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.9bdfdc62.css",
-    "main.js": "/static/js/main.31ded63b.js",
+    "main.css": "/static/css/main.8e86e1e6.css",
+    "main.js": "/static/js/main.4f0d6b98.js",
     "static/media/uicons-regular-rounded-XQLH6AOV.eot": "/static/media/uicons-regular-rounded-XQLH6AOV.f5289613cc9638d6450b.eot",
     "static/media/uicons-bold-rounded-LNV3TFSZ.eot": "/static/media/uicons-bold-rounded-LNV3TFSZ.1164661b7b133ea1baea.eot",
     "static/media/uicons-solid-rounded-KXKSROIE.eot": "/static/media/uicons-solid-rounded-KXKSROIE.2bcf181413962ac40f5a.eot",
@@ -22,13 +22,14 @@
     "static/media/uicons-solid-straight-66WOGMJ5.woff2": "/static/media/uicons-solid-straight-66WOGMJ5.5481098a6eb6769095ea.woff2",
     "static/media/uicons-brands-ZJWE2ELA.eot": "/static/media/uicons-brands-ZJWE2ELA.a6db396393f1097f0bfb.eot",
     "static/media/uicons-brands-PQBQF6T3.woff": "/static/media/uicons-brands-PQBQF6T3.7ab29100c1f05469b972.woff",
+    "static/media/sultani_logo.jpg": "/static/media/sultani_logo.60d29029e9d6f29faa1c.jpg",
     "static/media/uicons-brands-XJPKRNBN.woff2": "/static/media/uicons-brands-XJPKRNBN.033917e9fd41cfa9727c.woff2",
     "index.html": "/index.html",
-    "main.9bdfdc62.css.map": "/static/css/main.9bdfdc62.css.map",
-    "main.31ded63b.js.map": "/static/js/main.31ded63b.js.map"
+    "main.8e86e1e6.css.map": "/static/css/main.8e86e1e6.css.map",
+    "main.4f0d6b98.js.map": "/static/js/main.4f0d6b98.js.map"
   },
   "entrypoints": [
-    "static/css/main.9bdfdc62.css",
-    "static/js/main.31ded63b.js"
+    "static/css/main.8e86e1e6.css",
+    "static/js/main.4f0d6b98.js"
   ]
 }
