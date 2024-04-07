@@ -17,6 +17,7 @@ function AddFeedBackPage() {
   const [foodLevel, setFoodLevel] = useState("");
   const [cleanLevel, setCleanLevel] = useState("");
   const [clientName, setClientName] = useState("");
+  const [clientNumber, setClientNumber] = useState("");
   const [notes, setNotes] = useState("");
 
   function addFeedBack() {
@@ -84,19 +85,20 @@ function AddFeedBackPage() {
     <>
       <NavBar />
 
-      <div className="container-fluid text-center">
-        <div className="container-fluid">
+      <div className="container text-center">
+        <div className="container">
           <img src={logo} width={200} alt="" />
 
           <table
             id="table-with-background"
-            className="table table-bordered table-striped table-hover"
+            className="table table-sm table-bordered table-striped table-hover"
+            style={{ fontSize: "20px" }}
           >
             <tbody>
               {/*  */}
               <tr>
                 <td>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-around align-items-center">
                     <div className="p-2"></div>
                     <div>
                       <input
@@ -184,7 +186,7 @@ function AddFeedBackPage() {
               </tr>
               <tr>
                 <td>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-around align-items-center">
                     <div className="p-2"></div>
                     <div>
                       <input
@@ -272,7 +274,7 @@ function AddFeedBackPage() {
               </tr>
               <tr>
                 <td>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-around align-items-center">
                     <div className="p-2"></div>
                     <div>
                       <input
@@ -360,7 +362,7 @@ function AddFeedBackPage() {
               </tr>
               <tr>
                 <td>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-around align-items-center">
                     <div className="p-2"></div>
                     <div>
                       <input
@@ -448,7 +450,7 @@ function AddFeedBackPage() {
               </tr>
               <tr>
                 <td>
-                  <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex justify-content-around align-items-center">
                     <div className="p-2"></div>
                     <div>
                       <input
@@ -555,24 +557,53 @@ function AddFeedBackPage() {
               </tr>
               <tr>
                 <td>
-                  <input
-                    onChange={(e) => {
-                      setClientName(e.target.value);
-                    }}
-                    type="text"
-                    className="form-control text-center border border-dark"
-                    id="username"
-                    style={{ fontSize: "20px" }}
-                  />
+                  <div className="container d-flex justify-content-center align-items-center">
+                    <input
+                      onChange={(e) => {
+                        setClientName(e.target.value);
+                      }}
+                      type="text"
+                      className="form-control text-center border border-dark"
+                      id="username"
+                      style={{ fontSize: "20px" }}
+                    />
+                    <div className="m-2">
+                      <b>(اختياري)</b>
+                    </div>
+                  </div>
                 </td>
+
                 <td>
                   <b> اسم الزبون</b>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <div className="container d-flex justify-content-center align-items-center">
+                    <input
+                      onChange={(e) => {
+                        setClientNumber(e.target.value);
+                      }}
+                      maxLength={11}
+                      type="tel"
+                      className="form-control text-center border border-dark"
+                      id="phone"
+                      style={{ fontSize: "20px" }}
+                    />
+                    <div className="m-2">
+                      <b>(اختياري)</b>
+                    </div>
+                  </div>
+                </td>
+
+                <td colSpan={2}>
+                  <b> رقم الزبون</b>
+                </td>
+              </tr>
             </tbody>
           </table>
-          <div
-            className="btn btn-success p-2 mt-2 mb-2"
+          <button
+            className="btn btn-light text-success p-2 mt-2 mb-4"
             onClick={() => {
               if (
                 welcomeLevel === "" ||
@@ -587,8 +618,8 @@ function AddFeedBackPage() {
               addFeedBack();
             }}
           >
-            <h4> اضافة </h4>
-          </div>
+            <b style={{ fontSize: "24px" }}>اضافة</b>
+          </button>
         </div>
       </div>
     </>

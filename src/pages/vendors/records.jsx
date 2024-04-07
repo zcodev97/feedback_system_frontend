@@ -85,7 +85,10 @@ function FeedbackRecordsPage() {
             }}
           >
             <div className="container-fluid " style={{ overflowX: "auto" }}>
-              <table className="table table-striped table-sm table-hover">
+              <table
+                className="table table-striped table-sm table-hover"
+                style={{ fontSize: "18px" }}
+              >
                 <tfoot className="mt-3 ">
                   <p style={{ fontSize: "16px", fontWeight: "bold" }}>
                     {data.count} العدد الكلي
@@ -95,6 +98,7 @@ function FeedbackRecordsPage() {
                   <tr>
                     <th> تاريخ الانشاء</th>
                     <th> اسم الزبون</th>
+                    <th> رقم الزبون</th>
                     <th> ملاحظات</th>
                     <th>مستوى النظافة</th>
                     {/* <th>ملاحظات </th> */}
@@ -112,6 +116,7 @@ function FeedbackRecordsPage() {
                     <tr key={Math.random() * 10}>
                       <td>{formatDate(i.created_at)}</td>
                       <td>{i.client_name}</td>
+                      <td>{i.client_number}</td>
                       <td>{i.notes}</td>
                       <td>
                         {i.clean_level === "excellent"
