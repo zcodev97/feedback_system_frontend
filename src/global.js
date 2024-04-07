@@ -10,9 +10,9 @@ function formatDate(date = new Date()) {
   return [year, month, day].join("-");
 }
 
-// const SYSTEM_URL = "http://38.180.105.203:8099/";
+const SYSTEM_URL = "http://38.180.105.203:8099/";
 // const SYSTEM_URL = "http://localhost:8000/";
 // const SYSTEM_URL = "http://18.158.82.59:8010/";
-const SYSTEM_URL = "http://192.168.20.176:8000/";
+// const SYSTEM_URL = "http://192.168.20.176:8000/";
 
 export { formatDate, SYSTEM_URL };
